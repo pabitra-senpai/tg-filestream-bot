@@ -13,8 +13,3 @@ RUN pip install --upgrade pip && \
 
 # ------- Start Command -------
 CMD ["python", "-m", "FileStream"]
-
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
