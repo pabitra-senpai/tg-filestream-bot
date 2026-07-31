@@ -1,13 +1,3 @@
-# ---------------------------------------------------
-# File Name: File_Properties.py
-# Author: NeonAnurag
-# GitHub: https://github.com/MyselfNeon/
-# Telegram: https://t.me/MyelfNeon
-# Created: 2025-11-21
-# Last Modified: 2025-11-22
-# Version: Latest
-# License: MIT License
-# ---------------------------------------------------
 
 from __future__ import annotations
 import logging
@@ -150,8 +140,3 @@ async def send_file(client: Client, db_id, file_id: str, message):
         )
 
     return log_msg
-
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
