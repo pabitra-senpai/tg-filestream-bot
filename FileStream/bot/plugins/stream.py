@@ -1,14 +1,3 @@
-# ---------------------------------------------------
-# File Name: Stream.py
-# Author: NeonAnurag
-# GitHub: https://github.com/MyselfNeon/
-# Telegram: https://t.me/MyelfNeon
-# Created: 2025-11-21
-# Last Modified: 2025-11-22 (Merged with /users command)
-# Version: Latest
-# License: MIT License
-# ---------------------------------------------------
-
 import asyncio
 import json
 import os
@@ -189,8 +178,3 @@ async def users_count(bot: Client, message: Message):
     except Exception as e:
         await msg.edit_text(f"**__⚠️ Error Fetching User Data:__**\n<code>{e}</code>")
         print(f"[!] /users error: {e}")
-
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
