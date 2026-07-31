@@ -1,14 +1,3 @@
-# ---------------------------------------------------
-# File Name: Render_Template.py
-# Author: NeonAnurag
-# GitHub: https://github.com/MyselfNeon/
-# Telegram: https://t.me/MyelfNeon
-# Created: 2025-11-21
-# Last Modified: 2025-11-22
-# Version: Latest
-# License: MIT License
-# ---------------------------------------------------
-
 import aiohttp
 import jinja2
 import urllib.parse
@@ -41,8 +30,3 @@ async def render_page(db_id):
         file_url=src,
         file_size=file_size
     )
-
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
