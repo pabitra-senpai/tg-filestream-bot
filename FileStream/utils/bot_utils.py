@@ -1,11 +1,3 @@
-# ---------------------------------------------------
-# File Name: Bot_utils.py
-# Author: MyselfNeon
-# Original Repo: https://github.com/MyselfNeon/FileStream-Bot
-# GitHub: https://github.com/MyselfNeon/
-# Telegram: https://t.me/MyelfNeon
-# ---------------------------------------------------
-
 from pyrogram.errors import UserNotParticipant, FloodWait
 from pyrogram.enums.parse_mode import ParseMode
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
@@ -281,8 +273,4 @@ async def verify_user(bot, message):
             return False
 
     return True
-
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
+    
