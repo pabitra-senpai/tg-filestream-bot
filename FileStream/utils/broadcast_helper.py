@@ -1,14 +1,3 @@
-# ---------------------------------------------------
-# File Name: Broadcast_helper.py
-# Author: NeonAnurag
-# GitHub: https://github.com/MyselfNeon/
-# Telegram: https://t.me/MyelfNeon
-# Created: 2025-11-21
-# Last Modified: 2025-11-22
-# Version: Latest
-# License: MIT License
-# ---------------------------------------------------
-
 import asyncio
 import traceback
 from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked, PeerIdInvalid
@@ -29,8 +18,3 @@ async def send_msg(user_id, message):
         return 400, f"{user_id} : user id invalid\n"
     except Exception as e:
         return 500, f"{user_id} : {traceback.format_exc()}\n"
-
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
