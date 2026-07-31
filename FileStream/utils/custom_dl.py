@@ -1,14 +1,3 @@
-# ---------------------------------------------------
-# File Name: Custom_dl.py
-# Author: NeonAnurag
-# GitHub: https://github.com/MyselfNeon/
-# Telegram: https://t.me/MyelfNeon
-# Created: 2025-11-21
-# Last Modified: 2025-11-22
-# Version: Latest
-# License: MIT License
-# ---------------------------------------------------
-
 import asyncio
 import logging
 from typing import Dict, Union
@@ -224,8 +213,3 @@ class ByteStreamer:
             await asyncio.sleep(self.clean_timer)
             self.cached_file_ids.clear()
             logging.debug("Cleaned the cache")
-
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
