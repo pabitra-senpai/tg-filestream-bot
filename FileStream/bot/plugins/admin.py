@@ -1,14 +1,3 @@
-# ---------------------------------------------------
-# File Name: Admin.py
-# Author: NeonAnurag
-# GitHub: https://github.com/MyselfNeon/
-# Telegram: https://t.me/MyelfNeon
-# Created: 2025-11-21
-# Last Modified: 2025-11-22
-# Version: Latest
-# License: MIT License
-# ---------------------------------------------------
-
 import os
 import time
 import string
@@ -209,7 +198,3 @@ async def set_commands(client: Client, message: Message):
     except Exception as e:
         await message.reply_text(f"❌ **__Error:__** `{e}`")
 
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
