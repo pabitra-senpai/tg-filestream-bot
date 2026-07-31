@@ -1,14 +1,3 @@
-# ---------------------------------------------------
-# File Name: Start.py
-# Author: NeonAnurag
-# GitHub: https://github.com/MyselfNeon/
-# Telegram: https://t.me/MyelfNeon
-# Created: 2025-11-21
-# Last Modified: 2025-11-22
-# Version: Latest
-# License: MIT License
-# ---------------------------------------------------
-
 import logging
 import math
 import asyncio
@@ -198,7 +187,3 @@ async def my_files(bot: Client, message: Message):
         caption=f"Total files: {total_files}",
         reply_markup=InlineKeyboardMarkup(file_list)
     )
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
