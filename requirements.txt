@@ -1,0 +1,16 @@
+# --- Telegram & Bot Frameworks ---
+pyrofork
+TgCrypto
+
+# --- Asynchronous & Networking ---
+aiohttp
+aiofiles
+dnspython
+requests
+
+# --- Database & Environment ---
+motor
+python-dotenv
+
+# --- Web Templates ---
+Jinja2
