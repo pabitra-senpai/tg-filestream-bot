@@ -1,14 +1,3 @@
-# ---------------------------------------------------
-# File Name: Stream_Routes.py
-# Author: NeonAnurag
-# GitHub: https://github.com/MyselfNeon/
-# Telegram: https://t.me/MyelfNeon
-# Created: 2025-11-21
-# Last Modified: 2025-11-22
-# Version: Latest
-# License: MIT License
-# ---------------------------------------------------
-
 import time
 import math
 import logging
@@ -153,8 +142,3 @@ async def media_streamer(request: web.Request, db_id: str):
             "Accept-Ranges": "bytes",
         },
         )
-
-
-# MyselfNeon
-# Don't Remove Credit 🥺
-# Telegram Channel @NeonFiles
