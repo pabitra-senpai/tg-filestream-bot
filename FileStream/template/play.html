@@ -688,7 +688,7 @@ video {
 }
 
 /* ============================================================
-   COMPACT EXTERNAL PLAYERS SECTION
+   COMPACT EXTERNAL PLAYERS SECTION (IMG SVG BASED)
 ============================================================ */
 .section-label {
   display: flex;
@@ -762,14 +762,18 @@ video {
   transform: scale(1.06);
 }
 
-.ext-icon-box svg {
-  width: 18px;
-  height: 18px;
+/* External SVG Icon Styles */
+.ext-icon-box img.ext-icon-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
 }
 
-.ext-icon-box.vlc { background: var(--vlc-glow); color: var(--vlc-color); }
-.ext-icon-box.mx { background: var(--mx-glow); color: var(--mx-color); }
-.ext-icon-box.nplayer { background: var(--nplayer-glow); color: var(--nplayer-color); }
+.ext-icon-box.vlc { background: var(--vlc-glow); }
+.ext-icon-box.mx { background: var(--mx-glow); }
+.ext-icon-box.nplayer { background: var(--nplayer-glow); }
 
 .ext-meta strong {
   display: block;
@@ -950,7 +954,7 @@ video {
 }
 
 /* ============================================================
-   TOAST NOTIFICATION (Pop-in Slide Animation)
+   TOAST NOTIFICATION
 ============================================================ */
 .toast-bar {
   position: fixed;
@@ -1177,9 +1181,10 @@ video {
       Open in External Player
     </h2>
     <div class="ext-grid">
+      <!-- VLC Player (Desktop/Universal) -->
       <button class="ext-card" data-scheme="vlc://{{ file_url }}" data-app="VLC Player">
         <div class="ext-icon-box vlc">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 8h6l-9 12-9-12h6l3-8z"/></svg>
+          <img class="ext-icon-img" src="assets/icons/vlc.svg" alt="VLC Player">
         </div>
         <div class="ext-meta">
           <strong>VLC Player</strong>
@@ -1187,9 +1192,10 @@ video {
         </div>
       </button>
 
+      <!-- VLC Android Intent -->
       <button class="ext-card" data-scheme="intent:{{ file_url }}#Intent;package=org.videolan.vlc;type=video;scheme=https;end" data-app="VLC (Android)">
         <div class="ext-icon-box vlc">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 8h6l-9 12-9-12h6l3-8z"/></svg>
+          <img class="ext-icon-img" src="assets/icons/vlc.svg" alt="VLC Android">
         </div>
         <div class="ext-meta">
           <strong>VLC Android</strong>
@@ -1197,9 +1203,10 @@ video {
         </div>
       </button>
 
+      <!-- MX Player -->
       <button class="ext-card" data-scheme="intent:{{ file_url }}#Intent;package=com.mxtech.videoplayer.ad;S.title={{ file_name }};end" data-app="MX Player">
         <div class="ext-icon-box mx">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg>
+          <img class="ext-icon-img" src="assets/icons/mxplayer.svg" alt="MX Player">
         </div>
         <div class="ext-meta">
           <strong>MX Player</strong>
@@ -1207,9 +1214,10 @@ video {
         </div>
       </button>
 
+      <!-- MX Player Pro -->
       <button class="ext-card" data-scheme="intent:{{ file_url }}#Intent;package=com.mxtech.videoplayer.pro;S.title={{ file_name }};end" data-app="MX Player Pro">
         <div class="ext-icon-box mx">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg>
+          <img class="ext-icon-img" src="assets/icons/mxplayer.svg" alt="MX Player Pro">
         </div>
         <div class="ext-meta">
           <strong>MX Player Pro</strong>
@@ -1217,9 +1225,10 @@ video {
         </div>
       </button>
 
+      <!-- nPlayer -->
       <button class="ext-card" data-scheme="nplayer-{{ file_url }}" data-app="nPlayer">
         <div class="ext-icon-box nplayer">
-          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="#000"/></svg>
+          <img class="ext-icon-img" src="assets/icons/nplayer.svg" alt="nPlayer">
         </div>
         <div class="ext-meta">
           <strong>nPlayer</strong>
