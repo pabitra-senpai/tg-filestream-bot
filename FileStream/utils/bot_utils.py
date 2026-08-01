@@ -4,6 +4,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from FileStream.utils.translation import LANG
 from FileStream.utils.database import Database
 from FileStream.utils.human_readable import humanbytes
+from FileStream.utils.security import generate_secure_token
 from FileStream.config import Telegram, Server
 from FileStream.bot import FileStream
 import asyncio
@@ -88,8 +89,9 @@ async def gen_link(_id):
     file_size = humanbytes(file_info['file_size'])
     mime_type = file_info['mime_type']
 
-    page_link = f"{Server.URL}watch/{_id}"
-    stream_link = f"{Server.URL}dl/{_id}"
+    token = generate_secure_token(str(_id))
+    page_link = f"{Server.URL}watch/{_id}?hash={token}"
+    stream_link = f"{Server.URL}dl/{_id}?hash={token}"
     file_link = f"https://t.me/{FileStream.username}?start=file_{_id}"
 
     if "video" in mime_type:
@@ -125,8 +127,9 @@ async def gen_linkx(m: Message, _id, name: list):
     mime_type = file_info['mime_type']
     file_size = humanbytes(file_info['file_size'])
 
-    page_link = f"{Server.URL}watch/{_id}"
-    stream_link = f"{Server.URL}dl/{_id}"
+    token = generate_secure_token(str(_id))
+    page_link = f"{Server.URL}watch/{_id}?hash={token}"
+    stream_link = f"{Server.URL}dl/{_id}?hash={token}"
     file_link = f"https://t.me/{FileStream.username}?start=file_{_id}"
 
     if "video" in mime_type:
@@ -273,4 +276,3 @@ async def verify_user(bot, message):
             return False
 
     return True
-    
