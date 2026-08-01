@@ -10,6 +10,7 @@ from FileStream.config import Telegram, Server
 from FileStream.server.exceptions import FIleNotFound, InvalidHash
 from FileStream import utils, StartTime, __version__
 from FileStream.utils.render_template import render_page
+from FileStream.utils.security import verify_secure_token
 
 # Routes
 routes = web.RouteTableDef()
@@ -36,10 +37,13 @@ async def root_route_handler(_):
 
 # Watch Route
 @routes.get("/watch/{path}", allow_head=True)
-async def stream_handler(request: web.Request):
+async def watch_handler(request: web.Request):
     try:
         path = request.match_info["path"]
-        return web.Response(text=await render_page(path), content_type='text/html')
+        token = request.query.get("hash", "")
+        if not verify_secure_token(path, token):
+            raise InvalidHash
+        return web.Response(text=await render_page(path, token), content_type='text/html')
     except InvalidHash as e:
         raise web.HTTPForbidden(text=e.message)
     except FIleNotFound as e:
@@ -49,9 +53,12 @@ async def stream_handler(request: web.Request):
 
 # Download Route
 @routes.get("/dl/{path}", allow_head=True)
-async def stream_handler(request: web.Request):
+async def download_handler(request: web.Request):
     try:
         path = request.match_info["path"]
+        token = request.query.get("hash", "")
+        if not verify_secure_token(path, token):
+            raise InvalidHash
         return await media_streamer(request, path)
     except InvalidHash as e:
         raise web.HTTPForbidden(text=e.message)
@@ -141,4 +148,4 @@ async def media_streamer(request: web.Request, db_id: str):
             "Content-Disposition": f'{disposition}; filename="{file_name}"',
             "Accept-Ranges": "bytes",
         },
-        )
+    )
