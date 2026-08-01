@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Base Plate Mask/Clip -->
+    <clipPath id="vlc-base-clip">
+      <path d="M 154 306 H 358 C 368 306 376 312 380 321 L 433 430 C 439 443 429 452 414 452 H 98 C 83 452 73 443 79 430 L 132 321 C 136 312 144 306 154 306 Z"/>
+    </clipPath>
+
+    <!-- Cone Cap Highlight -->
+    <linearGradient id="cap-grad" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#FFA826"/>
+      <stop offset="100%" stop-color="#FF6B00"/>
+    </linearGradient>
+
+    <!-- Middle Orange Gradient -->
+    <linearGradient id="mid-orange" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF8A00"/>
+      <stop offset="45%" stop-color="#FF7D00"/>
+      <stop offset="100%" stop-color="#FF6200"/>
+    </linearGradient>
+
+    <!-- Base Light Orange -->
+    <linearGradient id="base-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF8500"/>
+      <stop offset="100%" stop-color="#FF6F00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 1. Cone Base Platform -->
+  <g clip-path="url(#vlc-base-clip)">
+    <rect x="0" y="300" width="512" height="160" fill="url(#base-light)"/>
+    <!-- Diagonal Base Shadow -->
+    <path d="M 182 306 L 500 306 L 500 460 L 252 460 Z" fill="#E85800"/>
+  </g>
+
+  <!-- 2. Lower White Stripe -->
+  <path d="M 168 262 Q 256 292 344 262 L 368 332 Q 256 376 144 332 Z" fill="#FFFFFF"/>
+
+  <!-- 3. Middle Orange Band -->
+  <path d="M 192 188 Q 256 212 320 188 L 344 262 Q 256 292 168 262 Z" fill="url(#mid-orange)"/>
+
+  <!-- 4. Upper White Stripe -->
+  <path d="M 220 122 Q 256 130 292 122 L 320 188 Q 256 212 192 188 Z" fill="#FFFFFF"/>
+
+  <!-- 5. Top Orange Cap -->
+  <path d="M 220 122 Q 256 130 292 122 L 280 98 C 272 68 265 60 256 60 C 247 60 240 68 232 98 Z" fill="url(#cap-grad)"/>
+</svg>
