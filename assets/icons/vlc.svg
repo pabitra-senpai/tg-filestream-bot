@@ -1,46 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <!-- Base Plate Mask/Clip -->
+    <!-- Base Plate Clip Path -->
     <clipPath id="vlc-base-clip">
-      <path d="M 154 306 H 358 C 368 306 376 312 380 321 L 433 430 C 439 443 429 452 414 452 H 98 C 83 452 73 443 79 430 L 132 321 C 136 312 144 306 154 306 Z"/>
+      <path d="M 152 306 H 360 C 370 306 377 312 381 321 L 433 430 C 439 443 429 452 414 452 H 98 C 83 452 73 443 79 430 L 131 321 C 135 312 142 306 152 306 Z"/>
     </clipPath>
-
-    <!-- Cone Cap Highlight -->
-    <linearGradient id="cap-grad" x1="20%" y1="0%" x2="80%" y2="100%">
-      <stop offset="0%" stop-color="#FFA826"/>
-      <stop offset="100%" stop-color="#FF6B00"/>
-    </linearGradient>
-
-    <!-- Middle Orange Gradient -->
-    <linearGradient id="mid-orange" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FF8A00"/>
-      <stop offset="45%" stop-color="#FF7D00"/>
-      <stop offset="100%" stop-color="#FF6200"/>
-    </linearGradient>
-
-    <!-- Base Light Orange -->
-    <linearGradient id="base-light" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF8500"/>
-      <stop offset="100%" stop-color="#FF6F00"/>
-    </linearGradient>
   </defs>
 
-  <!-- 1. Cone Base Platform -->
+  <!-- 1. Orange Base Platform -->
   <g clip-path="url(#vlc-base-clip)">
-    <rect x="0" y="300" width="512" height="160" fill="url(#base-light)"/>
-    <!-- Diagonal Base Shadow -->
-    <path d="M 182 306 L 500 306 L 500 460 L 252 460 Z" fill="#E85800"/>
+    <!-- Base Left / Main Highlight -->
+    <rect x="0" y="300" width="512" height="160" fill="#FF8000"/>
+    <!-- Base Right / Cast Shadow Split -->
+    <path d="M 180 306 L 500 306 L 500 460 L 248 460 Z" fill="#EE5C00"/>
   </g>
 
-  <!-- 2. Lower White Stripe -->
-  <path d="M 168 262 Q 256 292 344 262 L 368 332 Q 256 376 144 332 Z" fill="#FFFFFF"/>
+  <!-- 2. Orange Cone Main Body (Left Highlight + Right Shadow) -->
+  <!-- Left Side Light Highlight -->
+  <path d="M 256 62 C 244 62 232 78 220 126 L 146 306 Q 201 323 256 325 Z" fill="#FF8E00"/>
+  <!-- Right Side Main Shadow -->
+  <path d="M 256 62 L 256 325 Q 311 323 366 306 L 292 126 C 280 78 268 62 256 62 Z" fill="#FF6D00"/>
+  <!-- Top Cap Reflection Accent -->
+  <path d="M 256 62 C 246 62 236 76 226 112 Q 241 120 256 122 Z" fill="#FFA526" opacity="0.6"/>
 
-  <!-- 3. Middle Orange Band -->
-  <path d="M 192 188 Q 256 212 320 188 L 344 262 Q 256 292 168 262 Z" fill="url(#mid-orange)"/>
+  <!-- 3. Upper White Curved Stripe -->
+  <path d="M 220 126 Q 256 134 292 126 L 320 192 Q 256 214 192 192 Z" fill="#FFFFFF"/>
 
-  <!-- 4. Upper White Stripe -->
-  <path d="M 220 122 Q 256 130 292 122 L 320 188 Q 256 212 192 188 Z" fill="#FFFFFF"/>
-
-  <!-- 5. Top Orange Cap -->
-  <path d="M 220 122 Q 256 130 292 122 L 280 98 C 272 68 265 60 256 60 C 247 60 240 68 232 98 Z" fill="url(#cap-grad)"/>
+  <!-- 4. Lower White Curved Stripe -->
+  <path d="M 168 258 Q 256 288 344 258 L 368 332 Q 256 372 144 332 Z" fill="#FFFFFF"/>
 </svg>
