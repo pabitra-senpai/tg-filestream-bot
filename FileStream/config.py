@@ -1,4 +1,3 @@
-
 from os import environ as env
 from dotenv import load_dotenv
 
@@ -53,7 +52,14 @@ class Server:
         "s" if HAS_SSL else "", FQDN, "" if NO_PORT else ":" + str(PORT)
     )
 
+    # Secret key used to sign stream/download links (HMAC-SHA256).
+    # Set your own SECRET_KEY in .env for production — falling back to
+    # API_HASH + BOT_TOKEN only keeps things working if you forget to set it.
+    SECRET_KEY = str(env.get("SECRET_KEY") or (Telegram.API_HASH + Telegram.BOT_TOKEN))
+
+    # How long a generated stream/download link stays valid, in seconds.
+    # Default: 6 hours.
+    LINK_EXPIRY_SECONDS = int(env.get("LINK_EXPIRY_SECONDS", str(6 * 60 * 60)))
+
 # Keep-Alive URL
 KEEP_ALIVE_URL = env.get("KEEP_ALIVE_URL", "")
-
-
