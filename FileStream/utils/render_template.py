@@ -8,9 +8,11 @@ from FileStream.utils.human_readable import humanbytes
 
 db = Database(Telegram.DATABASE_URL, Telegram.SESSION_NAME)
 
-async def render_page(db_id):
+async def render_page(db_id, token: str = ""):
     file_data = await db.get_file(db_id)
     src = urllib.parse.urljoin(Server.URL, f'dl/{file_data["_id"]}')
+    if token:
+        src = f"{src}?hash={token}"
     file_size = humanbytes(file_data['file_size'])
     file_name = file_data['file_name'].replace("_", " ")
 
