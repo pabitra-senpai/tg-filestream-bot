@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Rounded Triangle Container Clip -->
+    <clipPath id="playit-shape">
+      <path d="M 122 136 C 122 104 146 90 172 104 L 400 236 C 424 250 424 262 400 276 L 172 408 C 146 422 122 408 122 376 Z"/>
+    </clipPath>
+
+    <!-- Band Gradients -->
+    <linearGradient id="yellow-band" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF000"/>
+      <stop offset="100%" stop-color="#FFCE00"/>
+    </linearGradient>
+
+    <linearGradient id="green-band" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#82F028"/>
+      <stop offset="100%" stop-color="#4CE010"/>
+    </linearGradient>
+
+    <linearGradient id="cyan-band" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C8FF"/>
+      <stop offset="100%" stop-color="#0072FF"/>
+    </linearGradient>
+
+    <linearGradient id="red-band" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF3838"/>
+      <stop offset="100%" stop-color="#E01212"/>
+    </linearGradient>
+  </defs>
+
+  <g clip-path="url(#playit-shape)">
+    <!-- Yellow Top Stripe -->
+    <path d="M 80 40 L 480 40 L 480 97 L 80 187 Z" fill="url(#yellow-band)"/>
+
+    <!-- Green Upper-Middle Stripe -->
+    <path d="M 80 183 L 480 93 L 480 202 L 80 292 Z" fill="url(#green-band)"/>
+
+    <!-- Cyan Lower-Middle Stripe -->
+    <path d="M 80 288 L 480 198 L 480 307 L 80 397 Z" fill="url(#cyan-band)"/>
+
+    <!-- Red Bottom Stripe -->
+    <path d="M 80 393 L 480 303 L 480 480 L 80 480 Z" fill="url(#red-band)"/>
+  </g>
+</svg>
