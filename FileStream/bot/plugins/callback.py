@@ -5,6 +5,7 @@ from FileStream.bot import FileStream
 from FileStream.config import Telegram, Server
 from FileStream.utils.translation import LANG, BUTTON
 from FileStream.utils.bot_utils import gen_link
+from FileStream.utils.security import generate_secure_token
 from FileStream.utils.database import Database
 from FileStream.utils.human_readable import humanbytes
 from FileStream.server.exceptions import FIleNotFound
@@ -141,8 +142,9 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
     else:
         file_type = "Unknown"
 
-    page_link = f"{Server.URL}watch/{myfile_info['_id']}"
-    stream_link = f"{Server.URL}dl/{myfile_info['_id']}"
+    token = generate_secure_token(str(myfile_info['_id']))
+    page_link = f"{Server.URL}watch/{myfile_info['_id']}?hash={token}"
+    stream_link = f"{Server.URL}dl/{myfile_info['_id']}?hash={token}"
 
     if "video" in file_type.lower():
         MYFILES_BUTTONS = InlineKeyboardMarkup([
@@ -208,4 +210,4 @@ async def delete_user_filex(_id, update: CallbackQuery):
     await update.message.edit_caption(
         caption="**Fɪʟᴇ Dᴇʟᴇᴛᴇᴅ Sᴜᴄᴄᴇssғᴜʟʟʏ !**\n\n",
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")]])
-                                    )
+        )
