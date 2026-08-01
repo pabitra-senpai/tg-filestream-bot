@@ -3,6 +3,7 @@ import math
 import logging
 import mimetypes
 import traceback
+import jinja2
 from aiohttp import web
 from aiohttp.http_exceptions import BadStatusLine
 from FileStream.bot import multi_clients, work_loads, FileStream
@@ -14,6 +15,12 @@ from FileStream.utils.security import verify_secure_token
 
 # Routes
 routes = web.RouteTableDef()
+
+
+def render_expired_page() -> str:
+    with open("FileStream/template/link_expired.html") as f:
+        template = jinja2.Template(f.read())
+    return template.render(bot_username=FileStream.username)
 
 # Status Route
 @routes.get("/", allow_head=True)
@@ -42,7 +49,7 @@ async def watch_handler(request: web.Request):
         path = request.match_info["path"]
         token = request.query.get("hash", "")
         if not verify_secure_token(path, token):
-            raise InvalidHash
+            return web.Response(text=render_expired_page(), content_type='text/html', status=403)
         return web.Response(text=await render_page(path, token), content_type='text/html')
     except InvalidHash as e:
         raise web.HTTPForbidden(text=e.message)
