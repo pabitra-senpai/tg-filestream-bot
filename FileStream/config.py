@@ -27,8 +27,7 @@ class Telegram:
         "https://files.catbox.moe/e6t097.png",
         "https://files.catbox.moe/4l7cc0.png",
         "https://files.catbox.moe/32tmev.png",
-
-"https://files.catbox.moe/ntqmum.png",
+        "https://files.catbox.moe/ntqmum.png",
     ])
     )
     START_PICS = [url.strip() for url in START_PICS_STRING.split(',')]
