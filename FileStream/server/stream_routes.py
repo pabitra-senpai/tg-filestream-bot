@@ -58,6 +58,22 @@ async def watch_handler(request: web.Request):
     except (AttributeError, BadStatusLine, ConnectionResetError):
         pass
 
+# Download Landing Page Route (always shows dl.html, even for video files)
+@routes.get("/download/{path}", allow_head=True)
+async def download_page_handler(request: web.Request):
+    try:
+        path = request.match_info["path"]
+        token = request.query.get("hash", "")
+        if not verify_secure_token(path, token):
+            return web.Response(text=render_expired_page(), content_type='text/html', status=403)
+        return web.Response(text=await render_page(path, token, force_dl=True), content_type='text/html')
+    except InvalidHash as e:
+        raise web.HTTPForbidden(text=e.message)
+    except FIleNotFound as e:
+        raise web.HTTPNotFound(text=e.message)
+    except (AttributeError, BadStatusLine, ConnectionResetError):
+        pass
+
 # Download Route
 @routes.get("/dl/{path}", allow_head=True)
 async def download_handler(request: web.Request):
