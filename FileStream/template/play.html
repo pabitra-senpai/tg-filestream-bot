@@ -259,11 +259,11 @@ vm-player {
 }
 .ext-card:hover { transform: translateY(-2px); border-color: var(--border-glow); }
 
-.ext-icon-box { width: 36px; height: 36px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex: none; }
+.ext-icon-box { width: 36px; height: 36px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex: none; padding: 7px; box-sizing: border-box; }
 .ext-icon-box.vlc { background: var(--vlc-glow); }
 .ext-icon-box.mx { background: var(--mx-glow); }
 .ext-icon-box.nplayer { background: var(--nplayer-glow); }
-.ext-icon-img { width: 20px; height: 20px; }
+.ext-icon-img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
 .ext-meta strong { display: block; font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.25; }
 .ext-meta small { display: block; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
