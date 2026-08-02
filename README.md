@@ -1,6 +1,8 @@
 <div align="center">
 
-# ▶️ FileStream
+<img src="assets/bot_icon.png" alt="FileStream" width="64" />
+
+# FileStream
 
 ### Turn any Telegram file into an instant, secure stream or download link.
 
@@ -189,5 +191,5 @@ MIT — see [`LICENSE`](LICENSE) for details.
 ---
 
 <div align="center">
-<sub>▶️ FileStream · Personal Stream Service · Do Not Share Publicly</sub>
+<sub><img src="assets/bot_icon.png" alt="FileStream" width="16" /> FileStream · Personal Stream Service · Do Not Share Publicly</sub>
 </div>
