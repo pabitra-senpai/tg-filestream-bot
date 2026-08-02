@@ -179,7 +179,7 @@ FileStream/
 
 ## 🙌 Credits
 
-Built and maintained under **[Nex](https://t.me/NexBots)** — follow the channel for updates,
+Built and maintained under **[Nex](https://t.me/NexBotz)** — follow the channel for updates,
 new bot launches, and support.
 
 ## 📄 License
