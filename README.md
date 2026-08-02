@@ -4,7 +4,7 @@
 
 ### Turn any Telegram file into an instant, secure stream or download link.
 
-*A [Nex](https://t.me/NexBots) product*
+*A [Nex](https://t.me/NexBotz) product*
 
 [![Python](https://img.shields.io/badge/Python-3.10+-F59E0B?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Pyrogram](https://img.shields.io/badge/Pyrogram-Async-F59E0B?style=flat-square)](https://docs.pyrogram.org/)
@@ -51,7 +51,7 @@ private Telegram log channel, served through your own web server, protected by
 ### 1. Clone & install
 
 ```bash
-git clone https://github.com/your-username/filestream-bot.git
+git clone https://github.com/pabitra-senpai/filestream-bot.git
 cd filestream-bot
 pip install -r requirements.txt
 ```
