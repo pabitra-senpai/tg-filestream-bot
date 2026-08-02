@@ -160,7 +160,7 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
         ])
     else:
         MYFILES_BUTTONS = InlineKeyboardMarkup([
-            [InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=stream_link)],
+            [InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=page_link)],
             [
                 InlineKeyboardButton("ɢᴇᴛ ғɪʟᴇ", callback_data=f"sendfile_{myfile_info['_id']}"),
                 InlineKeyboardButton("ʀᴇᴠᴏᴋᴇ ғɪʟᴇ", callback_data=f"msgdelete_{myfile_info['_id']}_{file_list_no}")
