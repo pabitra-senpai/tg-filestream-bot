@@ -220,23 +220,23 @@ vm-player {
 }
 .player-note svg { width: 15px; height: 15px; flex: none; stroke: var(--accent-gold); stroke-width: 2; fill: none; }
 
-/* Premium rose-red information cards (shared by both notices) */
+/* Muted grey information cards (shared by both notices) */
 .notice-card-wrap { margin-top: 12px; }
 .notice-card {
   display: flex; align-items: flex-start; gap: 9px;
   border-radius: var(--radius-md);
-  background: rgba(251, 113, 133, 0.05);
-  border: 1px solid rgba(251, 113, 133, 0.16);
-  box-shadow: 0 0 18px rgba(251, 113, 133, 0.07);
+  background: rgba(148, 163, 184, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 0 18px rgba(148, 163, 184, 0.05);
   padding: 12px 14px;
 }
-.notice-icon { width: 15px; height: 15px; flex: none; margin-top: 2px; stroke: #FB7185; fill: none; }
+.notice-icon { flex: none; margin-top: -1px; font-size: 15px; line-height: 1; color: #9CA3AF; }
 .notice-text { flex: 1; min-width: 0; }
 .notice-title {
-  font-style: italic; font-weight: 700; font-size: 12.5px; color: #FB7185; margin-bottom: 2px;
+  font-style: italic; font-weight: 700; font-size: 12.5px; color: #9CA3AF; margin-bottom: 2px;
 }
 .notice-body {
-  font-style: italic; font-size: 12px; line-height: 1.5; color: #FB7185; opacity: 0.78;
+  font-style: italic; font-size: 12px; line-height: 1.5; color: #9CA3AF; opacity: 0.78;
 }
 
 /* ============================================================
@@ -395,9 +395,7 @@ vm-player {
     </div>
     <div class="notice-card-wrap">
       <div class="notice-card">
-        <svg class="notice-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="11"/><line x1="12" y1="7.5" x2="12.01" y2="7.5"/>
-        </svg>
+        <span class="notice-icon">ⓘ</span>
         <div class="notice-text">
           <div class="notice-title">Need Advanced Playback?</div>
           <div class="notice-body">Some videos include multiple audio tracks, subtitles (CC), chapters and other advanced media features that aren't fully available in browser playback. For the complete experience, open the video using VLC Player, MX Player or nPlayer below.</div>
@@ -440,9 +438,7 @@ vm-player {
     </div>
     <div class="notice-card-wrap">
       <div class="notice-card">
-        <svg class="notice-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="11"/><line x1="12" y1="7.5" x2="12.01" y2="7.5"/>
-        </svg>
+        <span class="notice-icon">ⓘ</span>
         <div class="notice-text">
           <div class="notice-title">External Player Information</div>
           <div class="notice-body">Requires the supported app to be installed. Android intent links open natively on compatible devices. External players use the same signed secure link, so playback will stop once the link expires.</div>
