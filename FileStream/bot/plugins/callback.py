@@ -145,12 +145,13 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
     token = generate_secure_token(str(myfile_info['_id']))
     page_link = f"{Server.URL}watch/{myfile_info['_id']}?hash={token}"
     stream_link = f"{Server.URL}dl/{myfile_info['_id']}?hash={token}"
+    download_page_link = f"{Server.URL}download/{myfile_info['_id']}?hash={token}"
 
     if "video" in file_type.lower():
         MYFILES_BUTTONS = InlineKeyboardMarkup([
             [
                 InlineKeyboardButton("sᴛʀᴇᴀᴍ", url=page_link),
-                InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=page_link)
+                InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=download_page_link)
             ],
             [
                 InlineKeyboardButton("ɢᴇᴛ ғɪʟᴇ", callback_data=f"sendfile_{myfile_info['_id']}"),
@@ -160,7 +161,7 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
         ])
     else:
         MYFILES_BUTTONS = InlineKeyboardMarkup([
-            [InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=page_link)],
+            [InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=download_page_link)],
             [
                 InlineKeyboardButton("ɢᴇᴛ ғɪʟᴇ", callback_data=f"sendfile_{myfile_info['_id']}"),
                 InlineKeyboardButton("ʀᴇᴠᴏᴋᴇ ғɪʟᴇ", callback_data=f"msgdelete_{myfile_info['_id']}_{file_list_no}")
