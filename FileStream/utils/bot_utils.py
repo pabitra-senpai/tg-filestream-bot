@@ -95,10 +95,10 @@ async def gen_link(_id):
     file_link = f"https://t.me/{FileStream.username}?start=file_{_id}"
 
     if "video" in mime_type:
-        stream_text = LANG.STREAM_TEXT.format(file_name, file_size, stream_link, page_link, file_link)
+        stream_text = LANG.STREAM_TEXT.format(file_name, file_size, page_link, page_link, file_link)
         reply_markup = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("📹 Sᴛʀᴇᴀᴍ", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ", url=stream_link)],
+                [InlineKeyboardButton("📹 Sᴛʀᴇᴀᴍ", url=page_link), InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ", url=page_link)],
                 [InlineKeyboardButton("📂 Gᴇᴛ Fɪʟᴇ", url=file_link), InlineKeyboardButton("Rᴇᴠᴏᴋᴇ Fɪʟᴇ", callback_data=f"msgdelpvt_{_id}")],
                 [
                     InlineKeyboardButton("📤 Sʜᴀʀᴇ", url=f"https://t.me/share/url?url={file_link}&text=Check%20out%20this%20file%20on%20{FileStream.username}!"),
@@ -133,10 +133,10 @@ async def gen_linkx(m: Message, _id, name: list):
     file_link = f"https://t.me/{FileStream.username}?start=file_{_id}"
 
     if "video" in mime_type:
-        stream_text = LANG.STREAM_TEXT_X.format(file_name, file_size, stream_link, page_link)
+        stream_text = LANG.STREAM_TEXT_X.format(file_name, file_size, page_link, page_link)
         reply_markup = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("📹 Sᴛʀᴇᴀᴍ", url=page_link), InlineKeyboardButton("📥 Dᴏᴡɴʟᴏᴀᴅ", url=stream_link)]
+                [InlineKeyboardButton("📹 Sᴛʀᴇᴀᴍ", url=page_link), InlineKeyboardButton("📥 Dᴏᴡɴʟᴏᴀᴅ", url=page_link)]
             ]
         )
     else:
