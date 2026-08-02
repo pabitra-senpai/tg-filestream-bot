@@ -8,7 +8,7 @@ from FileStream.utils.human_readable import humanbytes
 
 db = Database(Telegram.DATABASE_URL, Telegram.SESSION_NAME)
 
-async def render_page(db_id, token: str = ""):
+async def render_page(db_id, token: str = "", force_dl: bool = False):
     file_data = await db.get_file(db_id)
     src = urllib.parse.urljoin(Server.URL, f'dl/{file_data["_id"]}')
     if token:
@@ -27,7 +27,9 @@ async def render_page(db_id, token: str = ""):
         except ValueError:
             expires_at = 0
 
-    if str((file_data['mime_type']).split('/')[0].strip()) == 'video':
+    is_video = str((file_data['mime_type']).split('/')[0].strip()) == 'video'
+
+    if is_video and not force_dl:
         template_file = "FileStream/template/play.html"
     else:
         template_file = "FileStream/template/dl.html"
