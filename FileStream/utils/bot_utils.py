@@ -110,7 +110,7 @@ async def gen_link(_id):
         stream_text = LANG.STREAM_TEXT_X.format(file_name, file_size, stream_link, file_link)
         reply_markup = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("📥 Dᴏᴡɴʟᴏᴀᴅ", url=stream_link)],
+                [InlineKeyboardButton("📥 Dᴏᴡɴʟᴏᴀᴅ", url=page_link)],
                 [InlineKeyboardButton("📂 Gᴇᴛ Fɪʟᴇ", url=file_link), InlineKeyboardButton("Rᴇᴠᴏᴋᴇ Fɪʟᴇ", callback_data=f"msgdelpvt_{_id}")],
                 [
                     InlineKeyboardButton("📤 Sʜᴀʀᴇ", url=f"https://t.me/share/url?url={file_link}&text=Check%20out%20this%20file%20on%20{FileStream.username}!"),
@@ -143,7 +143,7 @@ async def gen_linkx(m: Message, _id, name: list):
         stream_text = LANG.STREAM_TEXT_X.format(file_name, file_size, stream_link, file_link)
         reply_markup = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("📥 Dᴏᴡɴʟᴏᴀᴅ", url=stream_link)]
+                [InlineKeyboardButton("📥 Dᴏᴡɴʟᴏᴀᴅ", url=page_link)]
             ]
         )
     return reply_markup, stream_text
