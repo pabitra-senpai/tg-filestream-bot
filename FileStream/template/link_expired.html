@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Link Expired &middot; FileStream</title>
+
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-dark:          #070709;
+  --surface-glass:    rgba(255, 255, 255, 0.03);
+  --border-subtle:    rgba(255, 255, 255, 0.07);
+  --border-glow:      rgba(255, 255, 255, 0.14);
+  --accent-gold:      #F59E0B;
+  --accent-gold-soft: rgba(245, 158, 11, 0.2);
+  --danger:           #EF4444;
+  --danger-soft:      rgba(239, 68, 68, 0.15);
+  --text-primary:     #FFFFFF;
+  --text-secondary:   #9CA3AF;
+  --text-muted:       #6B7280;
+  --radius-xl:        20px;
+  --radius-md:        10px;
+  --font-main:        'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ease-spring:      cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.ambient-glow {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60vw;
+  height: 60vw;
+  max-width: 600px;
+  max-height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--danger-soft) 0%, transparent 70%);
+  filter: blur(120px);
+  pointer-events: none;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(20px);
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.8);
+  animation: revealUp 500ms var(--ease-spring) forwards;
+}
+
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.icon-box {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  background: var(--danger-soft);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--danger);
+}
+
+.icon-box svg { width: 34px; height: 34px; stroke-width: 2; }
+
+h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.reason-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.reason-badge svg { width: 13px; height: 13px; stroke-width: 2.2; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
+  color: #070709;
+  background: var(--accent-gold);
+  border: none;
+  box-shadow: 0 4px 20px var(--accent-gold-soft);
+  transition: transform 150ms var(--ease-spring), background-color 150ms;
+  text-decoration: none;
+}
+
+.btn:hover { background: #FFB84D; }
+.btn:active { transform: scale(0.97); }
+.btn svg { width: 17px; height: 17px; stroke-width: 2; }
+
+.footnote {
+  margin-top: 20px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+</style>
+</head>
+<body>
+
+<div class="ambient-glow" aria-hidden="true"></div>
+
+<div class="card">
+  <div class="icon-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
+  </div>
+
+  <h1>This Link Is No Longer Valid</h1>
+  <p>For your security, every stream and download link is signed and expires automatically. This one has expired, was altered, or never existed.</p>
+
+  <span class="reason-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Signed links expire after a few hours
+  </span>
+
+  <a class="btn" href="https://t.me/{{ bot_username }}" rel="noopener noreferrer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+    Request a Fresh Link on Telegram
+  </a>
+
+  <p class="footnote">Open the file again in your Telegram chat with the bot to generate a new, valid link.</p>
+</div>
+
+</body>
+</html>

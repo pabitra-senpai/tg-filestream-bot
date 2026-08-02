@@ -7,9 +7,10 @@
 
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy"
-      content="default-src 'self'; media-src 'self' blob:; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';">
+      content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex, nofollow">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +18,7 @@
 
 <style>
 /* ============================================================
-   2026 DESIGN SYSTEM & TOKENS (Download Edition)
+   2026 DESIGN SYSTEM & TOKENS (shared language with play.html)
 ============================================================ */
 :root {
   --bg-dark:          #070709;
@@ -28,7 +29,6 @@
   --border-subtle:    rgba(255, 255, 255, 0.07);
   --border-glow:      rgba(255, 255, 255, 0.14);
 
-  /* Accents */
   --accent-gold:      #F59E0B;
   --accent-gold-soft: rgba(245, 158, 11, 0.2);
   --accent-gold-hover:#FFB84D;
@@ -38,16 +38,16 @@
 
   --success-color:    #10B981;
   --success-glow:     rgba(16, 185, 129, 0.15);
+  --danger-color:     #EF4444;
+  --danger-glow:      rgba(239, 68, 68, 0.15);
   --purple-color:     #8B5CF6;
   --purple-glow:      rgba(139, 92, 246, 0.15);
 
-  /* Radius Tokens */
   --radius-xl:        20px;
   --radius-lg:        14px;
   --radius-md:        10px;
   --radius-sm:        8px;
 
-  /* Physics & Transitions */
   --font-main:        'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --ease-spring:      cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth:      cubic-bezier(0.4, 0, 0.2, 1);
@@ -61,11 +61,7 @@
   }
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   height: 100%;
@@ -77,10 +73,7 @@ html, body {
   overflow-x: hidden;
 }
 
-::selection {
-  background: var(--accent-gold);
-  color: #000;
-}
+::selection { background: var(--accent-gold); color: #000; }
 
 :focus-visible {
   outline: 2px solid var(--accent-gold);
@@ -88,56 +81,25 @@ html, body {
   border-radius: var(--radius-sm);
 }
 
-button {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: none;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; touch-action: manipulation; }
+a { color: inherit; text-decoration: none; }
 
 /* ============================================================
-   AMBIENT MESH BACKGROUND WITH FINE NOISE
+   AMBIENT MESH BACKGROUND
 ============================================================ */
-.ambient-wrapper {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
+.ambient-wrapper { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 
 .ambient-glow-1 {
-  position: absolute;
-  top: -15%;
-  left: -10%;
-  width: 50vw;
-  height: 50vw;
-  border-radius: 50%;
+  position: absolute; top: -15%; left: -10%; width: 55vw; height: 55vw; border-radius: 50%;
   background: radial-gradient(circle, var(--accent-gold-soft) 0%, transparent 70%);
-  filter: blur(120px);
-  opacity: 0.5;
-  will-change: transform;
+  filter: blur(120px); opacity: 0.5; will-change: transform;
   animation: floatAmbient 20s ease-in-out infinite alternate;
 }
 
 .ambient-glow-2 {
-  position: absolute;
-  bottom: -20%;
-  right: -10%;
-  width: 55vw;
-  height: 55vw;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
-  filter: blur(140px);
-  opacity: 0.5;
-  will-change: transform;
+  position: absolute; bottom: -20%; right: -10%; width: 55vw; height: 55vw; border-radius: 50%;
+  background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+  filter: blur(140px); opacity: 0.5; will-change: transform;
   animation: floatAmbient 24s ease-in-out infinite alternate-reverse;
 }
 
@@ -147,499 +109,164 @@ a {
 }
 
 .noise-overlay {
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  mix-blend-mode: overlay;
+  position: absolute; inset: 0; opacity: 0.03; mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ============================================================
    PAGE LAYOUT & REVEAL ANIMATION
 ============================================================ */
-body {
-  opacity: 0;
-  transition: opacity 300ms var(--ease-smooth);
-}
-
-body.is-ready {
-  opacity: 1;
-}
+body { opacity: 0; transition: opacity 300ms var(--ease-smooth); }
+body.is-ready { opacity: 1; }
 
 .page-container {
-  position: relative;
-  z-index: 1;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 24px 48px 24px;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  position: relative; z-index: 1; max-width: 640px; margin: 0 auto;
+  padding: 0 24px 48px 24px; display: flex; flex-direction: column; min-height: 100vh;
 }
 
-.reveal-node {
-  opacity: 0;
-  transform: translateY(16px);
-  animation: revealUp 500ms var(--ease-spring) forwards;
-}
+.reveal-node { opacity: 0; transform: translateY(16px); animation: revealUp 500ms var(--ease-spring) forwards; }
 
-@keyframes revealUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+@keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
 
 /* ============================================================
-   BALANCED HEADER SECTION
+   HEADER
 ============================================================ */
 .site-header {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  margin: 0 -24px 32px -24px;
-  padding: 14px 28px;
-  background: rgba(7, 7, 9, 0.7);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border-bottom: 1px solid var(--border-subtle);
+  position: sticky; top: 0; z-index: 30; margin: 0 -24px 24px -24px; padding: 14px 28px;
+  background: rgba(7, 7, 9, 0.7); backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%); border-bottom: 1px solid var(--border-subtle);
 }
 
-.header-inner {
-  max-width: 960px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
+.header-inner { max-width: 640px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
 
-.brand-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: -0.01em;
-  transition: transform 200ms var(--ease-spring);
-}
-
-.brand-badge:hover {
-  transform: scale(1.02);
-}
+.brand-badge { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; transition: transform 200ms var(--ease-spring); }
+.brand-badge:hover { transform: scale(1.02); }
 
 .brand-icon-box {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-md);
+  width: 34px; height: 34px; border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--accent-gold) 0%, #FFD066 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 12px var(--accent-gold-soft);
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px var(--accent-gold-soft);
+}
+.brand-icon-box svg { width: 18px; height: 18px; stroke: #070709; stroke-width: 2.5; fill: none; }
+
+/* Secure link status strip */
+.secure-strip {
+  display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
+  margin: 30px 0 8px 0; font-size: 12px;
 }
 
-.brand-icon-box svg {
-  width: 18px;
-  height: 18px;
-  stroke: #070709;
-  stroke-width: 2.5;
-  fill: none;
+.secure-pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px; border-radius: 99px;
+  font-weight: 600; background: var(--success-glow); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--success-color);
 }
+.secure-pill svg { width: 13px; height: 13px; stroke-width: 2.4; fill: none; stroke: currentColor; }
 
-.file-info-header {
-  text-align: right;
-  min-width: 0;
+.expiry-pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px; border-radius: 99px;
+  font-weight: 600; background: var(--surface-glass); border: 1px solid var(--border-subtle); color: var(--text-secondary);
+  transition: color 200ms, border-color 200ms, background 200ms;
 }
-
-.file-info-header .filename {
-  font-weight: 600;
-  font-size: 13.5px;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 42vw;
-  display: block;
-}
-
-.file-info-header .filesize {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 5px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-top: 2px;
-  font-weight: 500;
-}
+.expiry-pill svg { width: 13px; height: 13px; stroke-width: 2.2; fill: none; stroke: currentColor; }
+.expiry-pill.is-urgent { color: var(--danger-color); border-color: rgba(239, 68, 68, 0.35); background: var(--danger-glow); }
 
 /* ============================================================
-   HERO FILE DOWNLOAD CARD
+   HERO DOWNLOAD CARD
 ============================================================ */
+.hero-section { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 20px 0 36px 0; }
+
 .hero-download-card {
-  position: relative;
-  border-radius: var(--radius-xl);
-  background: var(--surface-glass);
-  border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(20px);
-  padding: 36px 32px;
-  margin-bottom: 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  box-shadow: 
-    0 24px 60px -15px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.04);
-  transition: border-color 250ms var(--ease-smooth), box-shadow 250ms var(--ease-smooth);
+  padding: 40px 32px; border-radius: var(--radius-xl); background: var(--surface-glass);
+  border: 1px solid var(--border-subtle); backdrop-filter: blur(20px); text-align: center;
+  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.8);
 }
 
-.hero-download-card:hover {
-  border-color: var(--border-glow);
-  box-shadow: 
-    0 28px 70px -15px rgba(0, 0, 0, 0.9),
-    0 0 24px var(--accent-gold-soft);
+.file-icon-wrapper {
+  width: 84px; height: 84px; margin: 0 auto 22px; border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--accent-gold-soft) 0%, rgba(245, 158, 11, 0.05) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.25); display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 30px var(--accent-gold-soft);
 }
-
-.file-type-icon-wrapper {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(255, 255, 255, 0.03) 100%);
-  border: 1px solid var(--border-glow);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-  color: var(--accent-gold);
-  box-shadow: 0 8px 24px var(--accent-gold-soft);
-  transition: transform 250ms var(--ease-spring);
-}
-
-.hero-download-card:hover .file-type-icon-wrapper {
-  transform: scale(1.06);
-}
-
-.file-type-icon-wrapper svg {
-  width: 38px;
-  height: 38px;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+.file-icon-wrapper svg { width: 36px; height: 36px; stroke: var(--accent-gold); stroke-width: 1.7; fill: none; }
 
 .file-display-name {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1.35;
-  margin-bottom: 12px;
-  word-break: break-word;
-  max-width: 680px;
-  letter-spacing: -0.01em;
+  font-size: 17px; font-weight: 700; word-break: break-word; margin-bottom: 14px; line-height: 1.35;
 }
 
-.file-tags-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
-}
+.file-tags-row { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; }
 
-.badge-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 99px;
-  font-size: 12px;
-  font-weight: 600;
-  background: var(--surface-hover);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
+.file-tag {
+  display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 99px;
+  font-size: 11.5px; font-weight: 600; background: var(--surface-hover); border: 1px solid var(--border-subtle); color: var(--text-secondary);
 }
+.file-tag svg { width: 12px; height: 12px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+.file-tag.is-secure { color: var(--success-color); background: var(--success-glow); border-color: rgba(16, 185, 129, 0.3); }
 
-.badge-tag.gold {
-  background: var(--accent-gold-soft);
-  border-color: rgba(245, 158, 11, 0.3);
-  color: var(--accent-gold);
-}
-
-.badge-tag.green {
-  background: var(--success-glow);
-  border-color: rgba(16, 185, 129, 0.3);
-  color: var(--success-color);
-}
-
-.badge-tag svg {
-  width: 13px;
-  height: 13px;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  fill: none;
-}
-
-.action-buttons-group {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  width: 100%;
-  max-width: 480px;
-}
+.action-buttons-group { display: flex; flex-direction: column; gap: 10px; }
 
 .btn {
-  position: relative;
-  overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 48px;
-  padding: 0 24px;
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  font-size: 14px;
-  flex: 1;
-  transition: transform 150ms var(--ease-spring), background-color 150ms var(--ease-smooth), border-color 150ms var(--ease-smooth);
+  position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center;
+  gap: 9px; min-height: 50px; padding: 0 22px; border-radius: var(--radius-md); font-weight: 600;
+  font-size: 14px; white-space: nowrap; width: 100%;
+  transition: transform 150ms var(--ease-spring), background-color 150ms var(--ease-smooth), border-color 150ms var(--ease-smooth), opacity 150ms;
 }
+.btn:active { transform: scale(0.97); }
+.btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-.btn:active {
-  transform: scale(0.96);
-}
+.btn-ghost { color: var(--text-primary); border: 1px solid var(--border-glow); background: var(--surface-glass); }
+.btn-ghost:hover { border-color: var(--accent-gold); color: var(--accent-gold); background: rgba(245, 158, 11, 0.06); }
 
-.btn svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  stroke-width: 2;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.btn-ghost {
-  color: var(--text-primary);
-  border: 1px solid var(--border-glow);
-  background: var(--surface-glass);
-}
-
-.btn-ghost:hover {
-  border-color: var(--accent-gold);
-  color: var(--accent-gold);
-  background: rgba(245, 158, 11, 0.06);
-}
-
-.btn-primary {
-  color: #070709;
-  background: var(--accent-gold);
-  box-shadow: 0 4px 20px var(--accent-gold-soft);
-  border: 1px solid transparent;
-}
-
-.btn-primary:hover {
-  background: var(--accent-gold-hover);
-  box-shadow: 0 6px 24px var(--accent-gold-soft);
-}
+.btn-primary { color: #070709; background: var(--accent-gold); box-shadow: 0 4px 20px var(--accent-gold-soft); border: 1px solid transparent; }
+.btn-primary:hover { background: var(--accent-gold-hover); box-shadow: 0 6px 24px var(--accent-gold-soft); }
+.btn-primary.is-disabled { pointer-events: none; opacity: 0.4; box-shadow: none; }
 
 /* ============================================================
-   FEATURE HIGHLIGHTS GRID
+   FEATURES GRID
 ============================================================ */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 36px;
-}
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 22px; }
 
 .feature-card {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  border-radius: var(--radius-lg);
-  background: var(--surface-glass);
-  border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(12px);
-  transition: transform 180ms var(--ease-spring), border-color 180ms var(--ease-smooth);
+  padding: 14px 10px; border-radius: var(--radius-lg); background: var(--surface-glass);
+  border: 1px solid var(--border-subtle); text-align: center; backdrop-filter: blur(12px);
 }
+.feature-card svg { width: 18px; height: 18px; stroke: var(--accent-gold); stroke-width: 2; fill: none; margin-bottom: 8px; }
+.feature-card strong { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+.feature-card small { display: block; font-size: 10px; color: var(--text-muted); margin-top: 3px; }
 
-.feature-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--border-glow);
-}
-
-.feature-icon-box {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-}
-
-.feature-icon-box.gold { background: var(--accent-gold-soft); color: var(--accent-gold); }
-.feature-icon-box.green { background: var(--success-glow); color: var(--success-color); }
-.feature-icon-box.purple { background: var(--purple-glow); color: var(--purple-color); }
-
-.feature-icon-box svg {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  stroke-width: 2;
-  fill: none;
-}
-
-.feature-text strong {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.25;
-}
-
-.feature-text small {
-  display: block;
-  font-size: 11.5px;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
+/* ============================================================
+   FOOTER
+============================================================ */
+.site-footer { padding-top: 20px; border-top: 1px solid var(--border-subtle); }
+.footer-inner { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-muted); text-align: center; }
+.footer-brand { display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--text-secondary); }
+.footer-brand svg { width: 14px; height: 14px; stroke: var(--accent-gold); stroke-width: 2; fill: none; }
 
 /* Touch Ripple */
-.ripple-effect {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(0);
-  animation: rippleAnim 450ms var(--ease-smooth);
-}
-
-@keyframes rippleAnim {
-  to {
-    transform: scale(2.2);
-    opacity: 0;
-  }
-}
+.ripple-effect { position: absolute; border-radius: 50%; pointer-events: none; background: rgba(255, 255, 255, 0.2); transform: scale(0); animation: rippleAnim 450ms var(--ease-smooth); }
+@keyframes rippleAnim { to { transform: scale(2.2); opacity: 0; } }
 
 /* ============================================================
-   MINIMAL FOOTER
-============================================================ */
-.site-footer {
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-subtle);
-}
-
-.footer-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-  font-size: 11.5px;
-  color: var(--text-muted);
-}
-
-.footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.footer-brand svg {
-  width: 14px;
-  height: 14px;
-  stroke: var(--accent-gold);
-  stroke-width: 2;
-  fill: none;
-}
-
-/* ============================================================
-   TOAST NOTIFICATION (Pop-in Slide Animation)
+   TOAST NOTIFICATION
 ============================================================ */
 .toast-bar {
-  position: fixed;
-  left: 50%;
-  bottom: 28px;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 99px;
-  background: rgba(13, 14, 18, 0.95);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--border-glow);
-  font-size: 12.5px;
-  font-weight: 500;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.7);
-  transform: translate(-50%, 20px) scale(0.95);
-  opacity: 0;
-  visibility: hidden;
+  position: fixed; left: 50%; bottom: 28px; z-index: 100; display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: 99px; background: rgba(13, 14, 18, 0.95); backdrop-filter: blur(16px);
+  border: 1px solid var(--border-glow); font-size: 12.5px; font-weight: 500; box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+  transform: translate(-50%, 20px) scale(0.95); opacity: 0; visibility: hidden; max-width: calc(100vw - 32px);
   transition: transform 250ms var(--ease-spring), opacity 250ms var(--ease-smooth), visibility 250ms;
 }
-
-.toast-bar.is-visible {
-  transform: translate(-50%, 0) scale(1);
-  opacity: 1;
-  visibility: visible;
-}
-
-.toast-bar svg {
-  width: 16px;
-  height: 16px;
-  color: #10B981;
-  stroke-width: 2.5;
-  flex: none;
-}
-
-.toast-bar.is-error svg {
-  color: #EF4444;
-}
+.toast-bar.is-visible { transform: translate(-50%, 0) scale(1); opacity: 1; visibility: visible; }
+.toast-bar svg { width: 16px; height: 16px; color: #10B981; stroke-width: 2.5; flex: none; }
+.toast-bar.is-error svg { color: #EF4444; }
 
 /* ============================================================
-   RESPONSIVE LAYOUT (Mobile-first, 8px Grid)
+   RESPONSIVE
 ============================================================ */
-@media (max-width: 768px) {
-  .page-container {
-    padding: 0 16px 36px 16px;
-  }
-
-  .site-header {
-    margin: 0 -16px 24px -16px;
-    padding: 12px 18px;
-  }
-
-  .hero-download-card {
-    padding: 28px 20px;
-  }
-
-  .file-display-name {
-    font-size: 17px;
-  }
-
-  .features-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .action-buttons-group {
-    flex-direction: column;
-    max-width: 100%;
-  }
-
-  .btn {
-    width: 100%;
-  }
+@media (max-width: 480px) {
+  .page-container { padding: 0 16px 36px 16px; }
+  .site-header { margin: 0 -16px 24px -16px; padding: 12px 18px; }
+  .hero-download-card { padding: 32px 22px; }
+  .features-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .feature-card { padding: 12px 6px; }
 }
 </style>
 </head>
@@ -659,94 +286,79 @@ body.is-ready {
     <div class="header-inner">
       <a class="brand-badge" href="#" aria-label="FileStream Home">
         <div class="brand-icon-box">
-          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"/></svg>
         </div>
         FileStream
       </a>
-      <div class="file-info-header">
-        <span class="filename" title="{{ file_name }}">{{ file_name }}</span>
-        <span class="filesize">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          {{ file_size }}
-        </span>
-      </div>
     </div>
   </header>
 
-  <!-- Hero File Download Card -->
-  <main class="hero-download-card reveal-node" style="animation-delay: 60ms">
-    <div class="file-type-icon-wrapper" id="fileTypeIconBox">
-      <!-- Default SVG Icon (Auto-updated via JS based on extension) -->
-      <svg id="dynamicFileIcon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="18"/><line x1="15" y1="15" x2="12" y2="18"/></svg>
-    </div>
+  <div class="hero-section">
 
-    <h1 class="file-display-name" title="{{ file_name }}">{{ file_name }}</h1>
-
-    <div class="file-tags-row">
-      <span class="badge-tag gold">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        {{ file_size }}
-      </span>
-      <span class="badge-tag">
-        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        High-Speed Stream
-      </span>
-      <span class="badge-tag green">
+    <!-- Secure Link Status -->
+    <div class="secure-strip reveal-node" style="animation-delay: 30ms">
+      <span class="secure-pill">
         <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        SSL Secure
+        Signed &amp; Verified Link
+      </span>
+      <span class="expiry-pill" id="expiryPill" data-expires="{{ expires_at }}">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="expiryText">Checking validity&hellip;</span>
       </span>
     </div>
 
-    <div class="action-buttons-group">
-      <a class="btn btn-primary" href="{{ file_url }}" download rel="noopener noreferrer">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download File
-      </a>
-      <button class="btn btn-ghost" id="copyLinkBtn" type="button">
-        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Copy Link
-      </button>
-    </div>
-  </main>
+    <!-- Hero Download Card -->
+    <section class="reveal-node" style="animation-delay: 60ms">
+      <div class="hero-download-card">
+        <div class="file-icon-wrapper" id="fileIconWrapper">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h1 class="file-display-name" id="fileDisplayName">{{ file_name }}</h1>
+        <div class="file-tags-row">
+          <span class="file-tag">{{ file_size }}</span>
+          <span class="file-tag">High-Speed Stream</span>
+          <span class="file-tag is-secure">
+            <svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V5l-8-3z"/></svg>
+            HMAC Signed
+          </span>
+        </div>
+        <div class="action-buttons-group">
+          <a class="btn btn-primary" id="downloadBtn" href="{{ file_url }}" download rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download File
+          </a>
+          <button class="btn btn-ghost" id="copyLinkBtn" type="button">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Link
+          </button>
+        </div>
+      </div>
 
-  <!-- Feature Highlights -->
-  <section class="features-grid reveal-node" style="animation-delay: 120ms">
-    <div class="feature-card">
-      <div class="feature-icon-box gold">
-        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <div class="features-grid">
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          <strong>Unthrottled</strong>
+          <small>Full CDN speed</small>
+        </div>
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><polyline points="21 3 21 9 15 9"/></svg>
+          <strong>Resumable</strong>
+          <small>Range requests</small>
+        </div>
+        <div class="feature-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <strong>Time-Limited</strong>
+          <small>Auto-expiring link</small>
+        </div>
       </div>
-      <div class="feature-text">
-        <strong>Unthrottled CDN Speed</strong>
-        <small>Direct high-speed pipe</small>
-      </div>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon-box green">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <div class="feature-text">
-        <strong>Resume Supported</strong>
-        <small>Multi-threaded IDM transfer</small>
-      </div>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon-box purple">
-        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <div class="feature-text">
-        <strong>TLS 1.3 Encrypted</strong>
-        <small>Private & secure channel</small>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <!-- Footer -->
-  <footer class="site-footer reveal-node" style="animation-delay: 180ms">
+  <footer class="site-footer reveal-node" style="animation-delay: 150ms">
     <div class="footer-inner">
       <span class="footer-brand">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"/></svg>
         FileStream
       </span>
       <span>Personal Stream Service &bull; Do Not Share Publicly</span>
@@ -767,11 +379,10 @@ body.is-ready {
 
   document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('is-ready');
-    updateFileIcon();
   });
 
   /* ---------------------------------------------------------
-     Ripple Effect Attachment
+     Ripple Effect
   --------------------------------------------------------- */
   function attachRipple(element) {
     element.addEventListener('pointerdown', (e) => {
@@ -786,7 +397,6 @@ body.is-ready {
       ripple.addEventListener('animationend', () => ripple.remove());
     });
   }
-
   document.querySelectorAll('.btn').forEach(attachRipple);
 
   /* ---------------------------------------------------------
@@ -801,11 +411,11 @@ body.is-ready {
     toastBar.classList.toggle('is-error', isError);
     toastBar.classList.add('is-visible');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toastBar.classList.remove('is-visible'), 2400);
+    toastTimer = setTimeout(() => toastBar.classList.remove('is-visible'), 2600);
   }
 
   /* ---------------------------------------------------------
-     Copy Link Action
+     Copy Link
   --------------------------------------------------------- */
   document.getElementById('copyLinkBtn').addEventListener('click', async () => {
     try {
@@ -817,33 +427,61 @@ body.is-ready {
   });
 
   /* ---------------------------------------------------------
-     Smart File-Type Icon Switcher
+     File-Type Icon
+     Swaps the generic document icon for something more
+     specific based on the file's extension.
   --------------------------------------------------------- */
-  function updateFileIcon() {
-    const filename = "{{ file_name }}".toLowerCase();
-    const iconBox = document.getElementById('dynamicFileIcon');
-    
-    // Archive / Zip
-    if (filename.match(/\.(zip|rar|7z|tar|gz|bz2|xz)$/)) {
-      iconBox.innerHTML = '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>';
+  const ICONS = {
+    zip:  '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/>',
+    rar:  '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/>',
+    pdf:  '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15h1a1 1 0 0 0 0-2H9v4"/>',
+    mp3:  '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+    default: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>'
+  };
+
+  const fileName = document.getElementById('fileDisplayName').textContent.trim();
+  const ext = (fileName.split('.').pop() || '').toLowerCase();
+  const iconMarkup = ICONS[ext] || ICONS.default;
+  document.getElementById('fileIconWrapper').innerHTML =
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">${iconMarkup}</svg>`;
+
+  /* ---------------------------------------------------------
+     Secure Link Expiry Countdown
+     `data-expires` is a UNIX timestamp handed down from the
+     signed token (see utils/security.py). This is purely a
+     UI convenience — the server enforces the real expiry.
+  --------------------------------------------------------- */
+  const expiryPill = document.getElementById('expiryPill');
+  const expiryText = document.getElementById('expiryText');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const expiresAt = parseInt(expiryPill.dataset.expires || '0', 10);
+
+  function formatCountdown(seconds) {
+    if (seconds <= 0) return 'Link expired';
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    if (h > 0) return `Expires in ${h}h ${m}m`;
+    const s = seconds % 60;
+    if (m > 0) return `Expires in ${m}m ${s}s`;
+    return `Expires in ${s}s`;
+  }
+
+  function tickExpiry() {
+    if (!expiresAt) {
+      expiryText.textContent = 'Expiry unknown';
+      return;
     }
-    // Audio / Music
-    else if (filename.match(/\.(mp3|aac|flac|wav|m4a|ogg|opus)$/)) {
-      iconBox.innerHTML = '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>';
-    }
-    // Photo / Image
-    else if (filename.match(/\.(jpg|jpeg|png|webp|gif|svg|bmp|heic)$/)) {
-      iconBox.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>';
-    }
-    // Software / App / ISO
-    else if (filename.match(/\.(apk|exe|dmg|iso|bin|deb|msi)$/)) {
-      iconBox.innerHTML = '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/>';
-    }
-    // Document / PDF
-    else if (filename.match(/\.(pdf|doc|docx|txt|epub|mobi)$/)) {
-      iconBox.innerHTML = '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>';
+    const remaining = expiresAt - Math.floor(Date.now() / 1000);
+    expiryText.textContent = formatCountdown(remaining);
+    expiryPill.classList.toggle('is-urgent', remaining <= 600);
+    if (remaining <= 0) {
+      downloadBtn.classList.add('is-disabled');
+      showToast('This link has expired — reopen it from Telegram.', true);
+      clearInterval(expiryInterval);
     }
   }
+  tickExpiry();
+  const expiryInterval = setInterval(tickExpiry, 1000);
 })();
 </script>
 </body>
