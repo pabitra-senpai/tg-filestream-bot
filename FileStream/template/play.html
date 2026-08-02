@@ -221,23 +221,23 @@ vm-player {
 .player-note svg { width: 15px; height: 15px; flex: none; stroke: var(--accent-gold); stroke-width: 2; fill: none; }
 
 /* Rotating info cards (replaces static player-note) */
+/* Typewriter info card (single fixed card, no slider/icons/dots) */
 .info-rotator { margin-top: 12px; }
-.info-track {
-  display: grid; border-radius: var(--radius-md); background: var(--surface-glass);
-  border: 1px solid var(--border-subtle); padding: 12px 14px;
+.info-box {
+  border-radius: var(--radius-md); background: var(--surface-glass); border: 1px solid var(--border-subtle);
+  padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; gap: 4px;
 }
-.info-card {
-  grid-area: 1 / 1; display: flex; align-items: flex-start; gap: 9px;
-  font-size: 12px; line-height: 1.5; color: var(--text-muted);
-  opacity: 0; transform: translateY(14px); pointer-events: none;
-  transition: opacity 460ms cubic-bezier(.4,0,.2,1), transform 460ms cubic-bezier(.4,0,.2,1);
+.tw-title {
+  font-style: italic; font-weight: 700; font-size: 12.5px; color: var(--text-secondary);
 }
-.info-card.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-.info-card svg { width: 15px; height: 15px; flex: none; stroke: var(--accent-gold); stroke-width: 2; fill: none; margin-top: 1px; }
-.info-card strong { display: block; color: var(--text-secondary); font-size: 12.5px; font-weight: 700; margin-bottom: 2px; }
-.info-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
-.info-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border-subtle); transition: background 300ms ease, transform 300ms ease; }
-.info-dot.active { background: var(--accent-gold); transform: scale(1.3); }
+.tw-desc {
+  font-style: italic; font-size: 12px; line-height: 1.5; color: var(--text-muted);
+}
+.tw-cursor {
+  display: inline-block; width: 1px; height: 1em; margin-left: 2px; vertical-align: -0.15em;
+  background: var(--accent-gold); animation: twBlink 850ms steps(1) infinite;
+}
+@keyframes twBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
 /* ============================================================
    EXTERNAL PLAYERS SECTION
@@ -396,25 +396,9 @@ vm-player {
       </vm-player>
     </div>
     <div class="info-rotator" id="infoRotator">
-      <div class="info-track">
-        <div class="info-card active" data-index="0">
-          <svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-          <div>
-            <strong>⚡ Browser Streaming</strong>
-            Stream instantly with native browser playback controls including play, seek, volume, playback speed, fullscreen and Picture-in-Picture.
-          </div>
-        </div>
-        <div class="info-card" data-index="1">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M7 2 5 6M12 2l-2 4M17 2l-2 4"/></svg>
-          <div>
-            <strong>🎬 Need Advanced Playback?</strong>
-            Some videos include multiple audio tracks, subtitles (CC), chapters and other advanced media features that aren't fully available in browser playback. Open the video in VLC, MX Player or nPlayer below for the complete experience.
-          </div>
-        </div>
-      </div>
-      <div class="info-dots">
-        <span class="info-dot active" data-dot="0"></span>
-        <span class="info-dot" data-dot="1"></span>
+      <div class="info-box" id="infoBox">
+        <div class="tw-title" id="twTitle"></div>
+        <div class="tw-desc" id="twDesc"></div>
       </div>
     </div>
   </section>
@@ -527,60 +511,101 @@ vm-player {
   document.querySelectorAll('.btn, .ext-card').forEach(attachRipple);
 
   /* ---------------------------------------------------------
-     Rotating Info Cards
+     Typewriter Info Card
   --------------------------------------------------------- */
-  (function initInfoRotator() {
-    const rotator = document.getElementById('infoRotator');
-    if (!rotator) return;
+  (function initTypewriter() {
+    const box = document.getElementById('infoBox');
+    const titleEl = document.getElementById('twTitle');
+    const descEl = document.getElementById('twDesc');
+    if (!box || !titleEl || !descEl) return;
 
-    const cards = rotator.querySelectorAll('.info-card');
-    const dots = rotator.querySelectorAll('.info-dot');
-    const ROTATE_MS = 4500;
-    let activeIndex = 0;
-    let intervalId = null;
+    const messages = [
+      {
+        title: 'Browser Streaming',
+        desc: 'Stream instantly with native browser playback controls including play, seek, volume, playback speed, fullscreen and Picture-in-Picture.'
+      },
+      {
+        title: 'Need Advanced Playback?',
+        desc: "Some videos include multiple audio tracks, subtitles (CC), chapters and other advanced media features that aren't fully available in browser playback. For the complete experience, open the video using VLC Player, MX Player or nPlayer below."
+      }
+    ];
+
+    const TYPE_MS = 20;
+    const ERASE_MS = 12;
+    const HOLD_MS = 3500;
+    const GAP_MS = 400;
+
     let isPaused = false;
+    let msgIndex = 0;
+    let timerId = null;
 
-    function show(index) {
-      cards.forEach((card, i) => card.classList.toggle('active', i === index));
-      dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
-      activeIndex = index;
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    function advance() {
-      if (isPaused) return;
-      show((activeIndex + 1) % cards.length);
+    function setContent(el, text, showCursor) {
+      el.innerHTML = escapeHtml(text) + (showCursor ? '<span class="tw-cursor"></span>' : '');
     }
 
-    function start() {
-      stop();
-      intervalId = setInterval(advance, ROTATE_MS);
+    function lockHeight() {
+      // Render every message at full length to find the tallest layout,
+      // then fix the card's height so later typing never shifts the page.
+      let maxHeight = 0;
+      messages.forEach((m) => {
+        setContent(titleEl, m.title, false);
+        setContent(descEl, m.desc, false);
+        maxHeight = Math.max(maxHeight, box.scrollHeight);
+      });
+      box.style.minHeight = maxHeight + 'px';
+      setContent(titleEl, '', false);
+      setContent(descEl, '', false);
     }
 
-    function stop() {
-      if (intervalId) clearInterval(intervalId);
-      intervalId = null;
+    function typeText(el, text, speed, done) {
+      let i = 0;
+      (function step() {
+        if (isPaused) { timerId = setTimeout(step, speed); return; }
+        setContent(el, text.slice(0, i), true);
+        if (i >= text.length) { done && done(); return; }
+        i++;
+        timerId = setTimeout(step, speed);
+      })();
     }
 
-    function pause() { isPaused = true; }
-    function resume() { isPaused = false; }
+    function eraseText(el, text, speed, done) {
+      let i = text.length;
+      (function step() {
+        if (isPaused) { timerId = setTimeout(step, speed); return; }
+        setContent(el, text.slice(0, i), true);
+        if (i <= 0) { done && done(); return; }
+        i--;
+        timerId = setTimeout(step, speed);
+      })();
+    }
 
-    rotator.addEventListener('mouseenter', pause);
-    rotator.addEventListener('mouseleave', resume);
-    rotator.addEventListener('touchstart', pause, { passive: true });
-    rotator.addEventListener('touchend', resume, { passive: true });
-    rotator.addEventListener('focusin', pause);
-    rotator.addEventListener('focusout', resume);
+    function runCycle() {
+      const msg = messages[msgIndex];
+      typeText(titleEl, msg.title, TYPE_MS, () => {
+        setContent(titleEl, msg.title, false);
+        typeText(descEl, msg.desc, TYPE_MS, () => {
+          timerId = setTimeout(() => {
+            eraseText(descEl, msg.desc, ERASE_MS, () => {
+              eraseText(titleEl, msg.title, ERASE_MS, () => {
+                msgIndex = (msgIndex + 1) % messages.length;
+                timerId = setTimeout(runCycle, GAP_MS);
+              });
+            });
+          }, HOLD_MS);
+        });
+      });
+    }
 
     document.addEventListener('visibilitychange', () => {
       isPaused = document.hidden;
     });
 
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => show(i));
-    });
-
-    show(0);
-    start();
+    lockHeight();
+    runCycle();
   })();
 
   /* ---------------------------------------------------------
