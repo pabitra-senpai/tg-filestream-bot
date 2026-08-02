@@ -15,6 +15,7 @@ from FileStream.utils.security import verify_secure_token
 
 # Routes
 routes = web.RouteTableDef()
+routes.static('/assets', 'assets')
 
 
 def render_expired_page() -> str:
