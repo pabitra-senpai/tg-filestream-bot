@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-  <rect width="200" height="200" fill="#0d0d0d"/>
-  <circle cx="100" cy="100" r="92" fill="#3b8ef2"/>
-  <polygon points="72,58 145,100 72,142" fill="#ffffff" stroke="#3b8ef2" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Transparent Background -->
+  <circle cx="100" cy="100" r="90" fill="#3B82F6"/>
+  <polygon points="80,60 80,140 142,100" fill="#FFFFFF"/>
 </svg>
