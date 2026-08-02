@@ -24,10 +24,9 @@ class Telegram:
     START_PICS_STRING = env.get(
     'START_PICS',
     ",".join([
-        "https://files.catbox.moe/a0js39.jpg",
-        "https://files.catbox.moe/ni25rb.jpg",
-        "https://files.catbox.moe/561dmo.jpg",
-        "https://files.catbox.moe/wryhyh.jpg",
+        "https://files.catbox.moe/e6t097.png",
+        "https://files.catbox.moe/4l7cc0.png",
+        "https://files.catbox.moe/32tmev.png",
     ])
     )
     START_PICS = [url.strip() for url in START_PICS_STRING.split(',')]
