@@ -1,121 +1,193 @@
-# FileStream Bot
+<div align="center">
 
-A Telegram bot built with **Pyrofork (Pyrogram)** that turns any file sent to it (video, document, audio, voice, animation, photo) into an instant **streamable / downloadable web link** — no need to open Telegram to watch or download.
+# ▶️ FileStream
+
+### Turn any Telegram file into an instant, secure stream or download link.
+
+*A [Nex](https://t.me/NexBots) product*
+
+[![Python](https://img.shields.io/badge/Python-3.10+-F59E0B?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Pyrogram](https://img.shields.io/badge/Pyrogram-Async-F59E0B?style=flat-square)](https://docs.pyrogram.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Database-10B981?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=flat-square)](#license)
+[![Telegram](https://img.shields.io/badge/Telegram-Nex_FileStreamBot-26A5E4?style=flat-square&logo=telegram&logoColor=white)](https://t.me/Nex_FileStreamBot)
+
+</div>
+
+---
+
+## About
+
+**FileStream** is a self-hosted Telegram bot that turns any file you send it — video, audio,
+document, whatever — into a direct link you can stream in your browser or download at full
+speed. No forwarding to public channels, no third-party file hosts. Your files stay in your own
+private Telegram log channel, served through your own web server, protected by
+**cryptographically signed, auto-expiring links**.
 
 ## ✨ Features
 
-- 🔗 Generate direct stream & download links for any file sent to the bot (private chat or channel)
-- ▶️ Built-in HTML video player (`play.html`) for streaming videos in the browser
-- 📥 Dedicated download page (`dl.html`)
-- 🗄️ MongoDB-backed file & user database
-- 🚫 Force-subscribe support (require users to join a channel before use)
-- 👑 Admin tools: ban/unban users or channels, broadcast messages, bot status, user list export
-- ⚙️ Multi-client support for load balancing across bot tokens
-- 🐳 Docker-ready, and pre-configured for one-click deploy on Render/Heroku
+- 🎬 **In-browser streaming** — full HTML5 video player powered by [Vime](https://vimejs.com/), with play/pause, seek, volume, captions, playback speed, fullscreen & picture-in-picture
+- ⚡ **High-speed downloads** — Range-request support for resumable, unthrottled transfers
+- 🔐 **Signed, expiring links** — every stream/download URL is HMAC-SHA256 signed and expires automatically (default: 6 hours) — no more permanently-guessable links
+- 📱 **External player deep links** — open straight in VLC, MX Player, or nPlayer on mobile
+- 🚫 **Force-subscribe support** — require users to join your channel before use
+- 🛠️ **Admin panel** — live dashboard stats, paginated file/user tables, ban/unban, broadcast
+- ⚙️ **Multi-client load balancing** — spread traffic across multiple bot tokens
+- 🐳 **Deploy-ready** — Docker, Render, and Heroku configs included out of the box
 
-## 🧱 Project Structure
+## 🧱 Tech Stack
 
-```
-FileStream/
-├── bot/
-│   ├── plugins/
-│   │   ├── start.py      # /start command, onboarding, force-sub check
-│   │   ├── stream.py     # receives files, generates stream/download links
-│   │   ├── admin.py      # admin commands (ban, broadcast, status, etc.)
-│   │   └── callback.py   # inline button callback handling
-│   └── clients.py        # multi-client initialization
-├── server/
-│   └── stream_routes.py  # aiohttp routes that actually stream/serve files
-├── utils/
-│   ├── database.py       # MongoDB (motor) access layer
-│   ├── file_properties.py
-│   ├── bot_utils.py
-│   └── ...
-├── template/
-│   ├── play.html          # video player page
-│   └── dl.html             # download page
-├── config.py              # all environment variable configuration
-└── __main__.py             # entrypoint (starts bot + web server)
-```
+| Layer | Technology |
+|---|---|
+| Bot Framework | [Pyrofork](https://github.com/Mayuri-Chan/pyrofork) (Pyrogram fork) |
+| Web Server | aiohttp |
+| Database | MongoDB |
+| Video Player | [Vime](https://vimejs.com/) (official web components, via jsDelivr CDN) |
+| Templating | Jinja2 |
+| Deployment | Docker / Render / Heroku |
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
-### 1. Prerequisites
-
-- Python 3.11+
-- A MongoDB database (e.g. free tier on [MongoDB Atlas](https://www.mongodb.com/atlas))
-- A Telegram **API_ID** and **API_HASH** from [my.telegram.org](https://my.telegram.org)
-- A **Bot Token** from [@BotFather](https://t.me/BotFather)
-- Two private Telegram channels/groups (add your bot as admin) for file logs (`FLOG_CHANNEL`) and user logs (`ULOG_CHANNEL`)
-
-### 2. Clone & install
+### 1. Clone & install
 
 ```bash
-git clone <your-repo-url>
-cd tg-filestream-bot
+git clone https://github.com/your-username/filestream-bot.git
+cd filestream-bot
 pip install -r requirements.txt
 ```
 
-### 3. Configure environment variables
-
-Copy the example file and fill in your values:
+### 2. Configure environment
 
 ```bash
 cp .env.example .env
 ```
 
-Open `.env` and set at minimum: `API_ID`, `API_HASH`, `BOT_TOKEN`, `DATABASE_URL`, `OWNER_ID`, `FLOG_CHANNEL`, `ULOG_CHANNEL`, and `FQDN`.
+Fill in `.env` — see [Environment Variables](#-environment-variables) below for what each one does.
 
-See the comments inside [`.env.example`](./.env.example) for what each variable does.
-
-### 4. Run locally
+### 3. Run
 
 ```bash
-python -m FileStream
+python3 -m FileStream
 ```
 
-The bot will start polling Telegram, and the aiohttp web server will start on `PORT` (default `8080`), serving the stream/download links.
-
-## 🐳 Run with Docker
+### Docker
 
 ```bash
 docker build -t filestream-bot .
-docker run -d --env-file .env -p 8080:8080 filestream-bot
+docker run --env-file .env -p 8080:8080 filestream-bot
 ```
 
-## ☁️ Deploy to Render / Heroku
+### Deploy to Render
 
-This repo includes a `Procfile` and `Dockerfile`, so it deploys as-is to platforms like **Render** or **Heroku**:
+Push this repo to your own GitHub, connect it on [Render](https://render.com), set the
+environment variables from `.env.example` in the dashboard, and deploy. The included
+`render.yaml` / `Procfile` handle the rest.
 
-1. Push the repo to GitHub
-2. Create a new Web Service on Render (or app on Heroku) pointing to the repo
-3. Add all the environment variables from `.env.example` in the platform's dashboard
-4. Set `FQDN` to the domain the platform assigns you (e.g. `your-app-name.onrender.com`)
-5. Deploy — the platform will run `python -m FileStream` (via the Procfile) or build via the Dockerfile
+## 🔧 Environment Variables
 
-> 💡 Free-tier hosts often sleep after inactivity. Set `KEEP_ALIVE_URL` to your own public URL so the bot pings itself periodically and stays awake.
+<details>
+<summary><strong>Telegram credentials & bot identity</strong></summary>
 
-## 🤖 Usage
+| Variable | Description |
+|---|---|
+| `API_ID` / `API_HASH` | From [my.telegram.org](https://my.telegram.org) |
+| `BOT_TOKEN` | From [@BotFather](https://t.me/BotFather) |
+| `OWNER_ID` | Your numeric Telegram user ID |
+| `AUTH_USERS` | Extra user IDs allowed to use the bot (space-separated) |
 
-1. Start a chat with your bot and send `/start`
-2. Send it any file (video, document, audio, photo, etc.)
-3. The bot replies with a message containing **stream** and **download** links
-4. Open the stream link in a browser to watch/play, or the download link to save the file
+</details>
 
-### Admin Commands
+<details>
+<summary><strong>Database & logging</strong></summary>
+
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | MongoDB connection string |
+| `FLOG_CHANNEL` | Private channel ID where files are logged/stored |
+| `ULOG_CHANNEL` | Private channel ID where user activity/errors are logged |
+
+</details>
+
+<details>
+<summary><strong>Force-subscribe</strong></summary>
+
+| Variable | Description |
+|---|---|
+| `UPDATES_CHANNEL` | Channel username (no `@`) users must join |
+| `FORCE_SUB_ID` | Optional channel ID override |
+| `FORCE_UPDATES_CHANNEL` | `true` / `false` |
+
+</details>
+
+<details>
+<summary><strong>Web server & link security</strong></summary>
+
+| Variable | Description |
+|---|---|
+| `PORT` / `BIND_ADDRESS` | Server listen address |
+| `FQDN` | Your public domain (no `https://`, no trailing slash) |
+| `HAS_SSL` / `NO_PORT` | Domain/URL formatting flags |
+| `SECRET_KEY` | HMAC signing secret — generate with `python3 -c "import secrets; print(secrets.token_hex(32))"` |
+| `LINK_EXPIRY_SECONDS` | How long generated links stay valid (default `21600` = 6h) |
+
+</details>
+
+<details>
+<summary><strong>Bot images</strong></summary>
+
+| Variable | Description |
+|---|---|
+| `FILE_PIC` | Thumbnail shown with generated file links |
+| `START_PICS` | Comma-separated images rotated on `/start` |
+| `VERIFY_PIC` | Image shown on the force-subscribe prompt |
+
+</details>
+
+Full list with inline comments is in [`.env.example`](.env.example).
+
+## 🤖 Bot Commands
 
 | Command | Description |
 |---|---|
-| `/status` | Shows total users, banned users, total links generated |
-| `/users` | Exports the full user list as a JSON file |
-| `/ban` | Ban a user or channel |
-| `/unban` | Unban a user or channel |
-| `/broadcast` | Send a message to all bot users |
+| `/start` | Start the bot & see what it can do |
+| `/help` | How to use FileStream |
+| `/about` | About this bot |
+| `/files` | View your recently uploaded files |
 
-(Admin commands are restricted to `OWNER_ID` / `AUTH_USERS`.)
+Admin-only commands (`/status`, `/ban`, `/unban`, `/broadcast`, `/del`, `/users`, `/setcmd`) are
+gated behind `OWNER_ID` / `AUTH_USERS` and intentionally **not** exposed in the public bot menu.
 
-## ⚠️ Notes
+## 🔒 Security
 
-- Keep your `.env` file private — never commit it or your `API_HASH` / `BOT_TOKEN` to version control (`.env` is already in `.gitignore`).
-- `FLOG_CHANNEL` and `ULOG_CHANNEL` must be numeric IDs of channels/groups where your bot is an **admin**.
-- If `FORCE_UPDATES_CHANNEL=true`, users must join `UPDATES_CHANNEL` before they can use the bot.
+Every `/watch/{id}` and `/dl/{id}` link is signed with **HMAC-SHA256** and carries an embedded
+expiry timestamp — see [`utils/security.py`](FileStream/utils/security.py). Requests with a
+missing, tampered, or expired token are rejected before any file data is served, and shown a
+branded "Link Expired" page instead of a raw HTTP error. Nothing about a file is guessable from
+its URL alone.
+
+## 📁 Project Structure
+
+```
+FileStream/
+├── bot/plugins/     → start.py, stream.py, admin.py, callback.py
+├── server/          → stream_routes.py (aiohttp file server + auth)
+├── utils/           → database.py, security.py, file_properties.py, bot_utils.py
+├── template/         → play.html, dl.html, link_expired.html
+├── config.py         → environment configuration
+└── __main__.py       → entry point (bot + web server)
+```
+
+## 🙌 Credits
+
+Built and maintained under **[Nex](https://t.me/NexBots)** — follow the channel for updates,
+new bot launches, and support.
+
+## 📄 License
+
+MIT — see [`LICENSE`](LICENSE) for details.
+
+---
+
+<div align="center">
+<sub>▶️ FileStream · Personal Stream Service · Do Not Share Publicly</sub>
+</div>
