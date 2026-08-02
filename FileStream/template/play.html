@@ -220,24 +220,24 @@ vm-player {
 }
 .player-note svg { width: 15px; height: 15px; flex: none; stroke: var(--accent-gold); stroke-width: 2; fill: none; }
 
-/* Rotating info cards (replaces static player-note) */
-/* Typewriter info card (single fixed card, no slider/icons/dots) */
-.info-rotator { margin-top: 12px; }
-.info-box {
-  border-radius: var(--radius-md); background: var(--surface-glass); border: 1px solid var(--border-subtle);
-  padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; gap: 4px;
+/* Premium rose-red information cards (shared by both notices) */
+.notice-card-wrap { margin-top: 12px; }
+.notice-card {
+  display: flex; align-items: flex-start; gap: 9px;
+  border-radius: var(--radius-md);
+  background: rgba(251, 113, 133, 0.05);
+  border: 1px solid rgba(251, 113, 133, 0.16);
+  box-shadow: 0 0 18px rgba(251, 113, 133, 0.07);
+  padding: 12px 14px;
 }
-.tw-title {
-  font-style: italic; font-weight: 700; font-size: 12.5px; color: var(--text-secondary);
+.notice-icon { width: 15px; height: 15px; flex: none; margin-top: 2px; stroke: #FB7185; fill: none; }
+.notice-text { flex: 1; min-width: 0; }
+.notice-title {
+  font-style: italic; font-weight: 700; font-size: 12.5px; color: #FB7185; margin-bottom: 2px;
 }
-.tw-desc {
-  font-style: italic; font-size: 12px; line-height: 1.5; color: var(--text-muted);
+.notice-body {
+  font-style: italic; font-size: 12px; line-height: 1.5; color: #FB7185; opacity: 0.78;
 }
-.tw-cursor {
-  display: inline-block; width: 1px; height: 1em; margin-left: 2px; vertical-align: -0.15em;
-  background: var(--accent-gold); animation: twBlink 850ms steps(1) infinite;
-}
-@keyframes twBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
 /* ============================================================
    EXTERNAL PLAYERS SECTION
@@ -268,8 +268,6 @@ vm-player {
 .ext-meta strong { display: block; font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.25; }
 .ext-meta small { display: block; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-.ext-hint { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 11.5px; color: var(--text-muted); }
-.ext-hint svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; flex: none; }
 
 /* ============================================================
    DOWNLOAD SECTION
@@ -395,10 +393,15 @@ vm-player {
         <vm-default-ui></vm-default-ui>
       </vm-player>
     </div>
-    <div class="info-rotator" id="infoRotator">
-      <div class="info-box" id="infoBox">
-        <div class="tw-title" id="twTitle"></div>
-        <div class="tw-desc" id="twDesc"></div>
+    <div class="notice-card-wrap">
+      <div class="notice-card">
+        <svg class="notice-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="11"/><line x1="12" y1="7.5" x2="12.01" y2="7.5"/>
+        </svg>
+        <div class="notice-text">
+          <div class="notice-title">Need Advanced Playback?</div>
+          <div class="notice-body">Some videos include multiple audio tracks, subtitles (CC), chapters and other advanced media features that aren't fully available in browser playback. For the complete experience, open the video using VLC Player, MX Player or nPlayer below.</div>
+        </div>
       </div>
     </div>
   </section>
@@ -435,10 +438,17 @@ vm-player {
         <div class="ext-meta"><strong>nPlayer</strong><small>iOS &amp; Android</small></div>
       </button>
     </div>
-    <p class="ext-hint">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      Requires app installed. Android intent links work natively on mobile devices. External players use the same signed link, so they'll stop working after it expires.
-    </p>
+    <div class="notice-card-wrap">
+      <div class="notice-card">
+        <svg class="notice-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="11"/><line x1="12" y1="7.5" x2="12.01" y2="7.5"/>
+        </svg>
+        <div class="notice-text">
+          <div class="notice-title">External Player Information</div>
+          <div class="notice-body">Requires the supported app to be installed. Android intent links open natively on compatible devices. External players use the same signed secure link, so playback will stop once the link expires.</div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Download Section -->
@@ -509,104 +519,6 @@ vm-player {
     });
   }
   document.querySelectorAll('.btn, .ext-card').forEach(attachRipple);
-
-  /* ---------------------------------------------------------
-     Typewriter Info Card
-  --------------------------------------------------------- */
-  (function initTypewriter() {
-    const box = document.getElementById('infoBox');
-    const titleEl = document.getElementById('twTitle');
-    const descEl = document.getElementById('twDesc');
-    if (!box || !titleEl || !descEl) return;
-
-    const messages = [
-      {
-        title: 'Browser Streaming',
-        desc: 'Stream instantly with native browser playback controls including play, seek, volume, playback speed, fullscreen and Picture-in-Picture.'
-      },
-      {
-        title: 'Need Advanced Playback?',
-        desc: "Some videos include multiple audio tracks, subtitles (CC), chapters and other advanced media features that aren't fully available in browser playback. For the complete experience, open the video using VLC Player, MX Player or nPlayer below."
-      }
-    ];
-
-    const TYPE_MS = 20;
-    const ERASE_MS = 12;
-    const HOLD_MS = 3500;
-    const GAP_MS = 400;
-
-    let isPaused = false;
-    let msgIndex = 0;
-    let timerId = null;
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    function setContent(el, text, showCursor) {
-      el.innerHTML = escapeHtml(text) + (showCursor ? '<span class="tw-cursor"></span>' : '');
-    }
-
-    function lockHeight() {
-      // Render every message at full length to find the tallest layout,
-      // then fix the card's height so later typing never shifts the page.
-      let maxHeight = 0;
-      messages.forEach((m) => {
-        setContent(titleEl, m.title, false);
-        setContent(descEl, m.desc, false);
-        maxHeight = Math.max(maxHeight, box.scrollHeight);
-      });
-      box.style.minHeight = maxHeight + 'px';
-      setContent(titleEl, '', false);
-      setContent(descEl, '', false);
-    }
-
-    function typeText(el, text, speed, done) {
-      let i = 0;
-      (function step() {
-        if (isPaused) { timerId = setTimeout(step, speed); return; }
-        setContent(el, text.slice(0, i), true);
-        if (i >= text.length) { done && done(); return; }
-        i++;
-        timerId = setTimeout(step, speed);
-      })();
-    }
-
-    function eraseText(el, text, speed, done) {
-      let i = text.length;
-      (function step() {
-        if (isPaused) { timerId = setTimeout(step, speed); return; }
-        setContent(el, text.slice(0, i), true);
-        if (i <= 0) { done && done(); return; }
-        i--;
-        timerId = setTimeout(step, speed);
-      })();
-    }
-
-    function runCycle() {
-      const msg = messages[msgIndex];
-      typeText(titleEl, msg.title, TYPE_MS, () => {
-        setContent(titleEl, msg.title, false);
-        typeText(descEl, msg.desc, TYPE_MS, () => {
-          timerId = setTimeout(() => {
-            eraseText(descEl, msg.desc, ERASE_MS, () => {
-              eraseText(titleEl, msg.title, ERASE_MS, () => {
-                msgIndex = (msgIndex + 1) % messages.length;
-                timerId = setTimeout(runCycle, GAP_MS);
-              });
-            });
-          }, HOLD_MS);
-        });
-      });
-    }
-
-    document.addEventListener('visibilitychange', () => {
-      isPaused = document.hidden;
-    });
-
-    lockHeight();
-    runCycle();
-  })();
 
   /* ---------------------------------------------------------
      Toast System
