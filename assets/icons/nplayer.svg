@@ -1,15 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <defs>
-    <!-- Clip path for play button shape -->
-    <clipPath id="play-shape">
-      <path d="M 45,25 C 45,20 50,17 55,20 L 165,92 C 170,95 170,105 165,108 L 55,180 C 50,183 45,180 45,175 Z" />
+    <clipPath id="tri">
+      <path d="M45 30 Q45 20 55 25 L170 90 Q180 96 180 100 Q180 104 170 110 L55 175 Q45 180 45 170 Z"/>
     </clipPath>
   </defs>
-  <!-- Transparent Background -->
-  <g clip-path="url(#play-shape)">
-    <rect x="0" y="0" width="200" height="50" fill="#FBC02D"/>   <!-- Yellow -->
-    <rect x="0" y="50" width="200" height="50" fill="#7CB342"/>  <!-- Green -->
-    <rect x="0" y="100" width="200" height="50" fill="#03A9F4"/> <!-- Blue -->
-    <rect x="0" y="150" width="200" height="50" fill="#E53935"/> <!-- Red -->
+  <g clip-path="url(#tri)">
+    <rect x="30" y="10" width="160" height="45" fill="#ffcd00"/>
+    <rect x="30" y="55" width="160" height="45" fill="#7ed321"/>
+    <rect x="30" y="100" width="160" height="45" fill="#29abe2"/>
+    <rect x="30" y="145" width="160" height="45" fill="#ea4335"/>
   </g>
 </svg>
