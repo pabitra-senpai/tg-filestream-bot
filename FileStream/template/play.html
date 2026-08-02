@@ -220,6 +220,25 @@ vm-player {
 }
 .player-note svg { width: 15px; height: 15px; flex: none; stroke: var(--accent-gold); stroke-width: 2; fill: none; }
 
+/* Rotating info cards (replaces static player-note) */
+.info-rotator { margin-top: 12px; }
+.info-track {
+  display: grid; border-radius: var(--radius-md); background: var(--surface-glass);
+  border: 1px solid var(--border-subtle); padding: 12px 14px;
+}
+.info-card {
+  grid-area: 1 / 1; display: flex; align-items: flex-start; gap: 9px;
+  font-size: 12px; line-height: 1.5; color: var(--text-muted);
+  opacity: 0; transform: translateY(14px); pointer-events: none;
+  transition: opacity 460ms cubic-bezier(.4,0,.2,1), transform 460ms cubic-bezier(.4,0,.2,1);
+}
+.info-card.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.info-card svg { width: 15px; height: 15px; flex: none; stroke: var(--accent-gold); stroke-width: 2; fill: none; margin-top: 1px; }
+.info-card strong { display: block; color: var(--text-secondary); font-size: 12.5px; font-weight: 700; margin-bottom: 2px; }
+.info-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+.info-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border-subtle); transition: background 300ms ease, transform 300ms ease; }
+.info-dot.active { background: var(--accent-gold); transform: scale(1.3); }
+
 /* ============================================================
    EXTERNAL PLAYERS SECTION
 ============================================================ */
@@ -376,9 +395,27 @@ vm-player {
         <vm-default-ui></vm-default-ui>
       </vm-player>
     </div>
-    <div class="player-note">
-      <svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-      Full controls — play/pause, seek, volume, captions, playback speed, fullscreen &amp; picture-in-picture — are provided natively by the Vime player. AirPlay is available on Safari via the browser's own Control Center / share menu.
+    <div class="info-rotator" id="infoRotator">
+      <div class="info-track">
+        <div class="info-card active" data-index="0">
+          <svg viewBox="0 0 24 24"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+          <div>
+            <strong>⚡ Browser Streaming</strong>
+            Stream instantly with native browser playback controls including play, seek, volume, playback speed, fullscreen and Picture-in-Picture.
+          </div>
+        </div>
+        <div class="info-card" data-index="1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M7 2 5 6M12 2l-2 4M17 2l-2 4"/></svg>
+          <div>
+            <strong>🎬 Need Advanced Playback?</strong>
+            Some videos include multiple audio tracks, subtitles (CC), chapters and other advanced media features that aren't fully available in browser playback. Open the video in VLC, MX Player or nPlayer below for the complete experience.
+          </div>
+        </div>
+      </div>
+      <div class="info-dots">
+        <span class="info-dot active" data-dot="0"></span>
+        <span class="info-dot" data-dot="1"></span>
+      </div>
     </div>
   </section>
 
@@ -488,6 +525,63 @@ vm-player {
     });
   }
   document.querySelectorAll('.btn, .ext-card').forEach(attachRipple);
+
+  /* ---------------------------------------------------------
+     Rotating Info Cards
+  --------------------------------------------------------- */
+  (function initInfoRotator() {
+    const rotator = document.getElementById('infoRotator');
+    if (!rotator) return;
+
+    const cards = rotator.querySelectorAll('.info-card');
+    const dots = rotator.querySelectorAll('.info-dot');
+    const ROTATE_MS = 4500;
+    let activeIndex = 0;
+    let intervalId = null;
+    let isPaused = false;
+
+    function show(index) {
+      cards.forEach((card, i) => card.classList.toggle('active', i === index));
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+      activeIndex = index;
+    }
+
+    function advance() {
+      if (isPaused) return;
+      show((activeIndex + 1) % cards.length);
+    }
+
+    function start() {
+      stop();
+      intervalId = setInterval(advance, ROTATE_MS);
+    }
+
+    function stop() {
+      if (intervalId) clearInterval(intervalId);
+      intervalId = null;
+    }
+
+    function pause() { isPaused = true; }
+    function resume() { isPaused = false; }
+
+    rotator.addEventListener('mouseenter', pause);
+    rotator.addEventListener('mouseleave', resume);
+    rotator.addEventListener('touchstart', pause, { passive: true });
+    rotator.addEventListener('touchend', resume, { passive: true });
+    rotator.addEventListener('focusin', pause);
+    rotator.addEventListener('focusout', resume);
+
+    document.addEventListener('visibilitychange', () => {
+      isPaused = document.hidden;
+    });
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => show(i));
+    });
+
+    show(0);
+    start();
+  })();
 
   /* ---------------------------------------------------------
      Toast System
