@@ -15,6 +15,17 @@ async def render_page(db_id, token: str = ""):
         src = f"{src}?hash={token}"
     file_size = humanbytes(file_data['file_size'])
     file_name = file_data['file_name'].replace("_", " ")
+    mime_type = file_data.get('mime_type') or 'video/mp4'
+
+    # Token format is "<expires_at>.<signature>" (see utils/security.py).
+    # Pulled out here purely for display (a live countdown) — the actual
+    # access control already happened in stream_routes before this runs.
+    expires_at = 0
+    if token and "." in token:
+        try:
+            expires_at = int(token.split(".", 1)[0])
+        except ValueError:
+            expires_at = 0
 
     if str((file_data['mime_type']).split('/')[0].strip()) == 'video':
         template_file = "FileStream/template/play.html"
@@ -30,5 +41,7 @@ async def render_page(db_id, token: str = ""):
     return template.render(
         file_name=file_name,
         file_url=src,
-        file_size=file_size
+        file_size=file_size,
+        mime_type=mime_type,
+        expires_at=expires_at
     )
