@@ -1,9 +1,11 @@
 import time
+import io
 import math
 import logging
 import mimetypes
 import traceback
 import jinja2
+from PIL import Image
 from aiohttp import web
 from aiohttp.http_exceptions import BadStatusLine
 from FileStream.bot import multi_clients, work_loads, FileStream
@@ -95,6 +97,85 @@ async def download_handler(request: web.Request):
         logging.critical(e.with_traceback(None))
         logging.debug(traceback.format_exc())
         raise web.HTTPInternalServerError(text=str(e))
+
+# Preview Route — serves a downscaled, quality-reduced copy of an image so
+# the download page preview is never a full-quality copy of the original.
+# The "Download File" button always serves the untouched original via /dl/.
+PREVIEW_MAX_DIMENSION = 480
+PREVIEW_JPEG_QUALITY = 40
+
+@routes.get("/preview/{path}", allow_head=True)
+async def preview_handler(request: web.Request):
+    try:
+        path = request.match_info["path"]
+        token = request.query.get("hash", "")
+        if not verify_secure_token(path, token):
+            raise InvalidHash
+
+        raw_bytes = await _fetch_full_file_bytes(path)
+
+        image = Image.open(io.BytesIO(raw_bytes))
+        image = image.convert("RGB")
+        image.thumbnail((PREVIEW_MAX_DIMENSION, PREVIEW_MAX_DIMENSION))
+
+        buffer = io.BytesIO()
+        image.save(buffer, format="JPEG", quality=PREVIEW_JPEG_QUALITY)
+        preview_bytes = buffer.getvalue()
+
+        return web.Response(
+            body=preview_bytes,
+            content_type="image/jpeg",
+            headers={
+                "Cache-Control": "no-store",
+                "Content-Disposition": 'inline; filename="preview.jpg"',
+            },
+        )
+    except InvalidHash:
+        return web.Response(text=render_expired_page(), content_type='text/html', status=403)
+    except FIleNotFound:
+        return web.Response(text=render_expired_page(), content_type='text/html', status=404)
+    except (AttributeError, BadStatusLine, ConnectionResetError):
+        pass
+    except Exception as e:
+        traceback.print_exc()
+        logging.critical(e.with_traceback(None))
+        logging.debug(traceback.format_exc())
+        raise web.HTTPInternalServerError(text=str(e))
+
+
+async def _fetch_full_file_bytes(db_id: str) -> bytes:
+    """
+    Pulls the entire file down from Telegram (not range-limited), for use
+    by the preview route. Images sent as Telegram photos are small (a few
+    MB at most), so buffering the whole thing in memory is fine — this is
+    not used for the regular video/audio/document streaming path.
+    """
+    index = min(work_loads, key=work_loads.get)
+    faster_client = multi_clients[index]
+
+    if faster_client in class_cache:
+        tg_connect = class_cache[faster_client]
+    else:
+        tg_connect = utils.ByteStreamer(faster_client)
+        class_cache[faster_client] = tg_connect
+
+    file_id = await tg_connect.get_file_properties(db_id, multi_clients)
+    file_size = file_id.file_size
+
+    chunk_size = 1024 * 1024
+    from_bytes = 0
+    until_bytes = file_size - 1
+    offset = from_bytes - (from_bytes % chunk_size)
+    first_part_cut = from_bytes - offset
+    last_part_cut = until_bytes % chunk_size + 1
+    part_count = math.ceil(until_bytes / chunk_size) - math.floor(offset / chunk_size)
+
+    chunks = []
+    async for chunk in tg_connect.yield_file(
+        file_id, index, offset, first_part_cut, last_part_cut, part_count, chunk_size
+    ):
+        chunks.append(chunk)
+    return b"".join(chunks)
 
 # Cache
 class_cache = {}
