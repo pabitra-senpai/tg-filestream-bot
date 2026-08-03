@@ -4,7 +4,7 @@ from FileStream import __version__
 from FileStream.bot import FileStream
 from FileStream.config import Telegram, Server
 from FileStream.utils.translation import LANG, BUTTON
-from FileStream.utils.bot_utils import gen_link
+from FileStream.utils.bot_utils import gen_link, gen_files_caption_and_keyboard
 from FileStream.utils.security import generate_secure_token
 from FileStream.utils.database import Database
 from FileStream.utils.human_readable import humanbytes
@@ -79,10 +79,10 @@ async def cb_data(bot, update: CallbackQuery):
         )
 
     elif usr_cmd[0] == "userfiles":
-        file_list, total_files = await gen_file_list_button(int(usr_cmd[1]), update.from_user.id)
+        caption, reply_markup, total_files = await gen_files_caption_and_keyboard(int(usr_cmd[1]), update.from_user.id)
         await update.message.edit_caption(
-            caption=f"Total files: {total_files}",
-            reply_markup=InlineKeyboardMarkup(file_list)
+            caption=caption,
+            reply_markup=reply_markup
         )
 
     elif usr_cmd[0] == "myfile":
@@ -96,27 +96,6 @@ async def cb_data(bot, update: CallbackQuery):
         await update.message.reply_cached_media(myfile['file_id'], caption=f'**{file_name}**')
     else:
         await update.message.delete()
-
-async def gen_file_list_button(file_list_no: int, user_id: int):
-    file_range = [file_list_no * 10 - 10 + 1, file_list_no * 10]
-    user_files, total_files = await db.find_files(user_id, file_range)
-
-    file_list = []
-    async for x in user_files:
-        file_list.append([InlineKeyboardButton(x["file_name"], callback_data=f"myfile_{x['_id']}_{file_list_no}")])
-
-    if total_files > 10:
-        file_list.append([
-            InlineKeyboardButton("◄", callback_data=f"userfiles_{file_list_no-1}" if file_list_no > 1 else "N/A"),
-            InlineKeyboardButton(f"{file_list_no}/{math.ceil(total_files / 10)}", callback_data="N/A"),
-            InlineKeyboardButton("►", callback_data=f"userfiles_{file_list_no+1}" if total_files > file_list_no * 10 else "N/A")
-        ])
-    if not file_list:
-        file_list.append([InlineKeyboardButton("ᴇᴍᴘᴛʏ", callback_data="N/A")])
-
-    file_list.append([InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")])
-    return file_list, total_files
-
 
 async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
     try:
