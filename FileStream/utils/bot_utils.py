@@ -8,8 +8,14 @@ from FileStream.utils.security import generate_secure_token
 from FileStream.config import Telegram, Server
 from FileStream.bot import FileStream
 import asyncio
+import math
 from typing import Union
 from datetime import datetime, timezone, timedelta
+
+# Max characters shown per file name inside the /files caption before truncating
+FILES_NAME_MAX_LEN = 35
+# Numbered buttons per row in the /files keyboard
+FILES_BUTTONS_PER_ROW = 4
 
 # ✅ Indian Standard Time (IST)
 IST = timezone(timedelta(hours=5, minutes=30))
@@ -278,3 +284,49 @@ async def verify_user(bot, message):
             return False
 
     return True
+
+# Truncate a long file name for compact display
+def truncate_file_name(name: str, max_len: int = FILES_NAME_MAX_LEN) -> str:
+    if not name:
+        return "Unknown"
+    if len(name) <= max_len:
+        return name
+    return name[:max_len - 3].rstrip() + "..."
+
+# Build the compact "/files" caption + numbered/paginated keyboard
+# Reused by both the /files command (start.py) and the userfiles_X
+# pagination callback (callback.py) so both stay in sync.
+async def gen_files_caption_and_keyboard(file_list_no: int, user_id: int):
+    file_range = [file_list_no * 10 - 10 + 1, file_list_no * 10]
+    user_files, total_files = await db.find_files(user_id, file_range)
+
+    files = [x async for x in user_files]
+
+    caption_lines = ["🗂 Your Files", "", f"📁 Total Files: {total_files}", ""]
+    if files:
+        for idx, x in enumerate(files, start=1):
+            caption_lines.append(f"{idx}. {truncate_file_name(x['file_name'])}")
+    else:
+        caption_lines.append("ᴇᴍᴘᴛʏ")
+    caption = "\n".join(caption_lines)
+
+    keyboard = []
+    row = []
+    for idx, x in enumerate(files, start=1):
+        row.append(InlineKeyboardButton(str(idx), callback_data=f"myfile_{x['_id']}_{file_list_no}"))
+        if len(row) == FILES_BUTTONS_PER_ROW:
+            keyboard.append(row)
+            row = []
+    if row:
+        keyboard.append(row)
+
+    if total_files > 10:
+        keyboard.append([
+            InlineKeyboardButton("◀ Prev", callback_data=f"userfiles_{file_list_no-1}" if file_list_no > 1 else "N/A"),
+            InlineKeyboardButton(f"{file_list_no}/{math.ceil(total_files / 10)}", callback_data="N/A"),
+            InlineKeyboardButton("Next ▶", callback_data=f"userfiles_{file_list_no+1}" if total_files > file_list_no * 10 else "N/A")
+        ])
+
+    keyboard.append([InlineKeyboardButton("✖ Close", callback_data="close")])
+
+    return caption, InlineKeyboardMarkup(keyboard), total_files
