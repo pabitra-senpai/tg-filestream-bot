@@ -5,7 +5,7 @@ import random
 from FileStream import __version__
 from FileStream.bot import FileStream
 from FileStream.server.exceptions import FIleNotFound
-from FileStream.utils.bot_utils import gen_linkx, verify_user
+from FileStream.utils.bot_utils import gen_linkx, verify_user, gen_files_caption_and_keyboard
 from FileStream.config import Telegram # Assuming Telegram.START_PICS is now a list
 from FileStream.utils.database import Database
 from FileStream.utils.translation import LANG, BUTTON
@@ -164,26 +164,10 @@ async def my_files(bot: Client, message: Message):
     if not await verify_user(bot, message):
         return
 
-    user_files, total_files = await db.find_files(message.from_user.id, [1, 10])
-    file_list = []
-
-    async for x in user_files:
-        file_list.append([InlineKeyboardButton(x["file_name"], callback_data=f"myfile_{x['_id']}_{1}")])
-
-    if total_files > 10:
-        file_list.append([
-            InlineKeyboardButton("◄", callback_data="N/A"),
-            InlineKeyboardButton(f"1/{math.ceil(total_files / 10)}", callback_data="N/A"),
-            InlineKeyboardButton("►", callback_data="userfiles_2")
-        ])
-
-    if not file_list:
-        file_list.append([InlineKeyboardButton("ᴇᴍᴘᴛʏ", callback_data="N/A")])
-
-    file_list.append([InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")])
+    caption, reply_markup, total_files = await gen_files_caption_and_keyboard(1, message.from_user.id)
 
     await message.reply_photo(
         photo=Telegram.FILE_PIC,
-        caption=f"Total files: {total_files}",
-        reply_markup=InlineKeyboardMarkup(file_list)
+        caption=caption,
+        reply_markup=reply_markup
     )
