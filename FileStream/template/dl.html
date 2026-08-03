@@ -190,11 +190,29 @@ body.is-ready { opacity: 1; }
 
 /* Image preview (replaces the generic icon box for photo files) */
 .file-preview-image-wrapper {
-  width: 100%; max-height: 320px; margin: 0 auto 22px; border-radius: var(--radius-lg);
+  position: relative;
+  width: 100%; max-height: 320px; margin: 0 auto 14px; border-radius: var(--radius-lg);
   overflow: hidden; border: 1px solid var(--border-subtle); background: var(--surface-glass);
   display: flex; align-items: center; justify-content: center;
 }
-.file-preview-image { width: 100%; max-height: 320px; object-fit: contain; display: block; }
+.file-preview-image {
+  width: 100%; max-height: 320px; object-fit: contain; display: block;
+  /* Discourage casual long-press / right-click saving of the preview */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+/* Sits on top of the image so a touch-and-hold or right-click lands on
+   this transparent layer instead of the <img> element itself. */
+.preview-protect-overlay {
+  position: absolute; inset: 0; z-index: 2; background: transparent;
+}
+.preview-note {
+  font-size: 11px; color: var(--text-muted); margin: -6px 0 22px 0; text-align: center;
+}
 
 /* Inline audio player card (for audio/voice files) */
 .audio-player-card {
@@ -328,8 +346,9 @@ body.is-ready { opacity: 1; }
     <section class="reveal-node" style="animation-delay: 60ms">
       <div class="hero-download-card">
         {% if mime_type and mime_type.startswith('image/') %}
-        <div class="file-preview-image-wrapper">
-          <img class="file-preview-image" src="{{ file_url }}" alt="{{ file_name }}">
+        <div class="file-preview-image-wrapper" oncontextmenu="return false;">
+          <img class="file-preview-image" src="{{ preview_url }}" alt="{{ file_name }}" draggable="false" oncontextmenu="return false;">
+          <div class="preview-protect-overlay" aria-hidden="true" oncontextmenu="return false;"></div>
         </div>
         {% else %}
         <div class="file-icon-wrapper" id="fileIconWrapper">
@@ -337,6 +356,9 @@ body.is-ready { opacity: 1; }
         </div>
         {% endif %}
         <h1 class="file-display-name" id="fileDisplayName">{{ file_name }}</h1>
+        {% if mime_type and mime_type.startswith('image/') %}
+        <p class="preview-note">Low-quality preview &mdash; use Download File for the full-quality original</p>
+        {% endif %}
         <div class="file-tags-row">
           <span class="file-tag">{{ file_size }}</span>
           <span class="file-tag">High-Speed Stream</span>
@@ -410,6 +432,16 @@ body.is-ready { opacity: 1; }
   document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('is-ready');
   });
+
+  /* ---------------------------------------------------------
+     Image Preview Protection (fallback for the inline
+     oncontextmenu/draggable attributes already on the markup)
+  --------------------------------------------------------- */
+  const previewWrapper = document.querySelector('.file-preview-image-wrapper');
+  if (previewWrapper) {
+    previewWrapper.addEventListener('contextmenu', (e) => e.preventDefault());
+    previewWrapper.addEventListener('dragstart', (e) => e.preventDefault());
+  }
 
   /* ---------------------------------------------------------
      Ripple Effect
