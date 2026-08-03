@@ -84,10 +84,10 @@ async def download_handler(request: web.Request):
         if not verify_secure_token(path, token):
             raise InvalidHash
         return await media_streamer(request, path)
-    except InvalidHash as e:
-        raise web.HTTPForbidden(text=e.message)
-    except FIleNotFound as e:
-        raise web.HTTPNotFound(text=e.message)
+    except InvalidHash:
+        return web.Response(text=render_expired_page(), content_type='text/html', status=403)
+    except FIleNotFound:
+        return web.Response(text=render_expired_page(), content_type='text/html', status=404)
     except (AttributeError, BadStatusLine, ConnectionResetError):
         pass
     except Exception as e:
