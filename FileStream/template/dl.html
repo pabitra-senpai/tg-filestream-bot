@@ -188,6 +188,23 @@ body.is-ready { opacity: 1; }
 }
 .file-icon-wrapper svg { width: 36px; height: 36px; stroke: var(--accent-gold); stroke-width: 1.7; fill: none; }
 
+/* Image preview (replaces the generic icon box for photo files) */
+.file-preview-image-wrapper {
+  width: 100%; max-height: 320px; margin: 0 auto 22px; border-radius: var(--radius-lg);
+  overflow: hidden; border: 1px solid var(--border-subtle); background: var(--surface-glass);
+  display: flex; align-items: center; justify-content: center;
+}
+.file-preview-image { width: 100%; max-height: 320px; object-fit: contain; display: block; }
+
+/* Inline audio player card (for audio/voice files) */
+.audio-player-card {
+  margin-bottom: 22px; padding: 14px; border-radius: var(--radius-lg);
+  background: var(--surface-glass); border: 1px solid var(--border-subtle);
+}
+.audio-player-card audio { width: 100%; display: block; height: 40px; }
+/* Best-effort dark theming for the native player (support varies by browser) */
+.audio-player-card audio::-webkit-media-controls-panel { background-color: var(--surface-hover); }
+
 .file-display-name {
   font-size: 17px; font-weight: 700; word-break: break-word; margin-bottom: 14px; line-height: 1.35;
 }
@@ -310,9 +327,15 @@ body.is-ready { opacity: 1; }
     <!-- Hero Download Card -->
     <section class="reveal-node" style="animation-delay: 60ms">
       <div class="hero-download-card">
+        {% if mime_type and mime_type.startswith('image/') %}
+        <div class="file-preview-image-wrapper">
+          <img class="file-preview-image" src="{{ file_url }}" alt="{{ file_name }}">
+        </div>
+        {% else %}
         <div class="file-icon-wrapper" id="fileIconWrapper">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
+        {% endif %}
         <h1 class="file-display-name" id="fileDisplayName">{{ file_name }}</h1>
         <div class="file-tags-row">
           <span class="file-tag">{{ file_size }}</span>
@@ -322,6 +345,13 @@ body.is-ready { opacity: 1; }
             HMAC Signed
           </span>
         </div>
+        {% if mime_type and mime_type.startswith('audio/') %}
+        <div class="audio-player-card">
+          <audio controls preload="metadata" src="{{ file_url }}">
+            Your browser doesn't support inline audio playback — use the download button below.
+          </audio>
+        </div>
+        {% endif %}
         <div class="action-buttons-group">
           <a class="btn btn-primary" id="downloadBtn" href="{{ file_url }}" download rel="noopener noreferrer">
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -439,11 +469,14 @@ body.is-ready { opacity: 1; }
     default: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>'
   };
 
-  const fileName = document.getElementById('fileDisplayName').textContent.trim();
-  const ext = (fileName.split('.').pop() || '').toLowerCase();
-  const iconMarkup = ICONS[ext] || ICONS.default;
-  document.getElementById('fileIconWrapper').innerHTML =
-    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">${iconMarkup}</svg>`;
+  const fileIconWrapper = document.getElementById('fileIconWrapper');
+  if (fileIconWrapper) {
+    const fileName = document.getElementById('fileDisplayName').textContent.trim();
+    const ext = (fileName.split('.').pop() || '').toLowerCase();
+    const iconMarkup = ICONS[ext] || ICONS.default;
+    fileIconWrapper.innerHTML =
+      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">${iconMarkup}</svg>`;
+  }
 
   /* ---------------------------------------------------------
      Secure Link Expiry Countdown
