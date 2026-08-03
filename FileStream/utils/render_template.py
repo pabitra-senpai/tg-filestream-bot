@@ -28,6 +28,13 @@ async def render_page(db_id, token: str = "", force_dl: bool = False):
             expires_at = 0
 
     is_video = str(file_data.get('mime_type') or '').split('/')[0].strip() == 'video'
+    is_image = str(file_data.get('mime_type') or '').split('/')[0].strip() == 'image'
+
+    preview_url = None
+    if is_image:
+        preview_url = urllib.parse.urljoin(Server.URL, f'preview/{file_data["_id"]}')
+        if token:
+            preview_url = f"{preview_url}?hash={token}"
 
     if is_video and not force_dl:
         template_file = "FileStream/template/play.html"
@@ -43,6 +50,7 @@ async def render_page(db_id, token: str = "", force_dl: bool = False):
     return template.render(
         file_name=file_name,
         file_url=src,
+        preview_url=preview_url,
         file_size=file_size,
         mime_type=mime_type,
         expires_at=expires_at
