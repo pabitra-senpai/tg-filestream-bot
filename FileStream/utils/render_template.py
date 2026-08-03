@@ -27,7 +27,7 @@ async def render_page(db_id, token: str = "", force_dl: bool = False):
         except ValueError:
             expires_at = 0
 
-    is_video = str((file_data['mime_type']).split('/')[0].strip()) == 'video'
+    is_video = str(file_data.get('mime_type') or '').split('/')[0].strip() == 'video'
 
     if is_video and not force_dl:
         template_file = "FileStream/template/play.html"
