@@ -302,7 +302,7 @@ async def gen_files_caption_and_keyboard(file_list_no: int, user_id: int):
 
     files = [x async for x in user_files]
 
-    caption_lines = ["🗂 Yᴏᴜʀ Fɪʟᴇs", "", f"📁 Tᴏᴛᴀʟ Fɪʟᴇs: {total_files}", ""]
+    caption_lines = ["**🗂 Yᴏᴜʀ Fɪʟᴇs**", "", f"**📁 Tᴏᴛᴀʟ Fɪʟᴇs :** `{total_files}`", ""]
     if files:
         for idx, x in enumerate(files, start=1):
             caption_lines.append(f"{idx}. {truncate_file_name(x['file_name'])}")
