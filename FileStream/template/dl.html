@@ -347,7 +347,7 @@ body.is-ready { opacity: 1; }
         </div>
         {% if mime_type and mime_type.startswith('audio/') %}
         <div class="audio-player-card">
-          <audio controls preload="metadata" src="{{ file_url }}">
+          <audio controls preload="metadata" controlsList="nodownload noremoteplayback" disableRemotePlayback src="{{ file_url }}">
             Your browser doesn't support inline audio playback — use the download button below.
           </audio>
         </div>
