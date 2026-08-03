@@ -13,7 +13,7 @@ from typing import Union
 from datetime import datetime, timezone, timedelta
 
 # Max characters shown per file name inside the /files caption before truncating
-FILES_NAME_MAX_LEN = 35
+FILES_NAME_MAX_LEN = 26  # keeps "<idx>. <name>..." on a single line on narrow mobile screens
 # Numbered buttons per row in the /files keyboard
 FILES_BUTTONS_PER_ROW = 4
 
@@ -302,7 +302,7 @@ async def gen_files_caption_and_keyboard(file_list_no: int, user_id: int):
 
     files = [x async for x in user_files]
 
-    caption_lines = ["🗂 Your Files", "", f"📁 Total Files: {total_files}", ""]
+    caption_lines = ["🗂 Yᴏᴜʀ Fɪʟᴇs", "", f"📁 Tᴏᴛᴀʟ Fɪʟᴇs: {total_files}", ""]
     if files:
         for idx, x in enumerate(files, start=1):
             caption_lines.append(f"{idx}. {truncate_file_name(x['file_name'])}")
@@ -322,11 +322,11 @@ async def gen_files_caption_and_keyboard(file_list_no: int, user_id: int):
 
     if total_files > 10:
         keyboard.append([
-            InlineKeyboardButton("◀ Prev", callback_data=f"userfiles_{file_list_no-1}" if file_list_no > 1 else "N/A"),
+            InlineKeyboardButton("◀ Pʀᴇᴠ", callback_data=f"userfiles_{file_list_no-1}" if file_list_no > 1 else "N/A"),
             InlineKeyboardButton(f"{file_list_no}/{math.ceil(total_files / 10)}", callback_data="N/A"),
-            InlineKeyboardButton("Next ▶", callback_data=f"userfiles_{file_list_no+1}" if total_files > file_list_no * 10 else "N/A")
+            InlineKeyboardButton("Nᴇxᴛ ▶", callback_data=f"userfiles_{file_list_no+1}" if total_files > file_list_no * 10 else "N/A")
         ])
 
-    keyboard.append([InlineKeyboardButton("✖ Close", callback_data="close")])
+    keyboard.append([InlineKeyboardButton("✖ Cʟᴏsᴇ", callback_data="close")])
 
     return caption, InlineKeyboardMarkup(keyboard), total_files
