@@ -8,6 +8,12 @@ from FileStream.utils.human_readable import humanbytes
 
 db = Database(Telegram.DATABASE_URL, Telegram.SESSION_NAME)
 
+# Formats HTML5 <video> can actually decode in mainstream browsers.
+# Anything outside this list still opens the watch page (so the VLC / MX
+# Player / nPlayer deep-links stay available) — it just doesn't get the
+# inline browser player, which would otherwise silently fail to play.
+BROWSER_PLAYABLE_EXTENSIONS = {'.mp4', '.m4v', '.webm', '.mov', '.ogv', '.3gp'}
+
 async def render_page(db_id, token: str = "", force_dl: bool = False):
     file_data = await db.get_file(db_id)
     src = urllib.parse.urljoin(Server.URL, f'dl/{file_data["_id"]}')
@@ -29,6 +35,10 @@ async def render_page(db_id, token: str = "", force_dl: bool = False):
 
     is_video = str(file_data.get('mime_type') or '').split('/')[0].strip() == 'video'
     is_image = str(file_data.get('mime_type') or '').split('/')[0].strip() == 'image'
+
+    raw_name = file_data.get('file_name') or ''
+    file_ext = ('.' + raw_name.rsplit('.', 1)[-1].lower()) if '.' in raw_name else ''
+    is_browser_playable = file_ext in BROWSER_PLAYABLE_EXTENSIONS
 
     preview_url = None
     if is_image:
@@ -58,6 +68,7 @@ async def render_page(db_id, token: str = "", force_dl: bool = False):
         file_url=src,
         preview_url=preview_url,
         thumb_url=thumb_url,
+        is_browser_playable=is_browser_playable,
         file_size=file_size,
         mime_type=mime_type,
         expires_at=expires_at
