@@ -4,7 +4,6 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from FileStream.utils.translation import LANG
 from FileStream.utils.database import Database
 from FileStream.utils.human_readable import humanbytes
-from FileStream.utils.security import generate_secure_token
 from FileStream.config import Telegram, Server
 from FileStream.bot import FileStream
 import asyncio
@@ -95,13 +94,11 @@ async def gen_link(_id):
     file_size = humanbytes(file_info['file_size'])
     mime_type = file_info['mime_type']
 
-    token = generate_secure_token(str(_id))
-    page_link = f"{Server.URL}watch/{_id}?hash={token}"
-    stream_link = f"{Server.URL}dl/{_id}?hash={token}"
-    download_page_link = f"{Server.URL}download/{_id}?hash={token}"
+    page_link = f"{Server.URL}go/watch/{_id}"
+    download_page_link = f"{Server.URL}go/download/{_id}"
     file_link = f"https://t.me/{FileStream.username}?start=file_{_id}"
 
-    if "video" in mime_type:
+    if "video" in (mime_type or ""):
         stream_text = LANG.STREAM_TEXT.format(file_name, file_size, download_page_link, page_link, file_link)
         reply_markup = InlineKeyboardMarkup(
             [
@@ -134,13 +131,11 @@ async def gen_linkx(m: Message, _id, name: list):
     mime_type = file_info['mime_type']
     file_size = humanbytes(file_info['file_size'])
 
-    token = generate_secure_token(str(_id))
-    page_link = f"{Server.URL}watch/{_id}?hash={token}"
-    stream_link = f"{Server.URL}dl/{_id}?hash={token}"
-    download_page_link = f"{Server.URL}download/{_id}?hash={token}"
+    page_link = f"{Server.URL}go/watch/{_id}"
+    download_page_link = f"{Server.URL}go/download/{_id}"
     file_link = f"https://t.me/{FileStream.username}?start=file_{_id}"
 
-    if "video" in mime_type:
+    if "video" in (mime_type or ""):
         stream_text = LANG.STREAM_TEXT_X.format(file_name, file_size, download_page_link, page_link)
         reply_markup = InlineKeyboardMarkup(
             [
