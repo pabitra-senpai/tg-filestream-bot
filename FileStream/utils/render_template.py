@@ -36,6 +36,12 @@ async def render_page(db_id, token: str = "", force_dl: bool = False):
         if token:
             preview_url = f"{preview_url}?hash={token}"
 
+    thumb_url = None
+    if is_video and file_data.get('thumbnail_file_id'):
+        thumb_url = urllib.parse.urljoin(Server.URL, f'thumb/{file_data["_id"]}')
+        if token:
+            thumb_url = f"{thumb_url}?hash={token}"
+
     if is_video and not force_dl:
         template_file = "FileStream/template/play.html"
     else:
@@ -51,6 +57,7 @@ async def render_page(db_id, token: str = "", force_dl: bool = False):
         file_name=file_name,
         file_url=src,
         preview_url=preview_url,
+        thumb_url=thumb_url,
         file_size=file_size,
         mime_type=mime_type,
         expires_at=expires_at
