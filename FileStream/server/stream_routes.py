@@ -14,10 +14,13 @@ from FileStream.server.exceptions import FIleNotFound, InvalidHash
 from FileStream import utils, StartTime, __version__
 from FileStream.utils.render_template import render_page
 from FileStream.utils.security import verify_secure_token
+from FileStream.utils.database import Database
 
 # Routes
 routes = web.RouteTableDef()
 routes.static('/assets', 'assets')
+
+db = Database(Telegram.DATABASE_URL, Telegram.SESSION_NAME)
 
 
 def render_expired_page() -> str:
@@ -176,6 +179,47 @@ async def _fetch_full_file_bytes(db_id: str) -> bytes:
     ):
         chunks.append(chunk)
     return b"".join(chunks)
+
+# Thumbnail Route — serves the small Telegram-generated thumbnail for
+# video/document/animation files, shown on the download page instead of a
+# generic file icon. Downloaded directly via the bot client since
+# thumbnails are tiny (a few KB); no need for the chunked streaming path.
+@routes.get("/thumb/{path}", allow_head=True)
+async def thumb_handler(request: web.Request):
+    try:
+        path = request.match_info["path"]
+        token = request.query.get("hash", "")
+        if not verify_secure_token(path, token):
+            raise InvalidHash
+
+        file_data = await db.get_file(path)
+        thumb_file_id = file_data.get("thumbnail_file_id")
+        if not thumb_file_id:
+            raise FIleNotFound
+
+        buffer = await FileStream.download_media(thumb_file_id, in_memory=True)
+        if not buffer:
+            raise FIleNotFound
+
+        return web.Response(
+            body=buffer.getvalue(),
+            content_type="image/jpeg",
+            headers={
+                "Cache-Control": "public, max-age=3600",
+                "Content-Disposition": 'inline; filename="thumb.jpg"',
+            },
+        )
+    except InvalidHash:
+        return web.Response(text="Invalid hash", status=403)
+    except FIleNotFound:
+        return web.Response(text="No thumbnail available", status=404)
+    except (AttributeError, BadStatusLine, ConnectionResetError):
+        pass
+    except Exception as e:
+        traceback.print_exc()
+        logging.critical(e.with_traceback(None))
+        logging.debug(traceback.format_exc())
+        raise web.HTTPInternalServerError(text=str(e))
 
 # Cache
 class_cache = {}
