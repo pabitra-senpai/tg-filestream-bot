@@ -5,7 +5,6 @@ from FileStream.bot import FileStream
 from FileStream.config import Telegram, Server
 from FileStream.utils.translation import LANG, BUTTON
 from FileStream.utils.bot_utils import gen_link, gen_files_caption_and_keyboard
-from FileStream.utils.security import generate_secure_token
 from FileStream.utils.database import Database
 from FileStream.utils.human_readable import humanbytes
 from FileStream.server.exceptions import FIleNotFound
@@ -121,12 +120,16 @@ async def gen_file_menu(_id, file_list_no, update: CallbackQuery):
     else:
         file_type = "Unknown"
 
-    token = generate_secure_token(str(myfile_info['_id']))
-    page_link = f"{Server.URL}watch/{myfile_info['_id']}?hash={token}"
-    stream_link = f"{Server.URL}dl/{myfile_info['_id']}?hash={token}"
-    download_page_link = f"{Server.URL}download/{myfile_info['_id']}?hash={token}"
+    page_link = f"{Server.URL}go/watch/{myfile_info['_id']}"
+    download_page_link = f"{Server.URL}go/download/{myfile_info['_id']}"
 
-    if "video" in file_type.lower():
+    # Button set is decided by the file's actual mime_type (does the
+    # content start with "video/"?), not by which Telegram attachment
+    # type it was originally sent as. A .mkv/.mp4 sent as a plain
+    # "document" still gets a Stream button pointed at the watch page.
+    is_video_content = str(myfile_info.get('mime_type') or '').split('/')[0].strip() == 'video'
+
+    if is_video_content:
         MYFILES_BUTTONS = InlineKeyboardMarkup([
             [
                 InlineKeyboardButton("sᴛʀᴇᴀᴍ", url=page_link),
