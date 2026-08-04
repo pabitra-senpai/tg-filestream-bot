@@ -214,6 +214,17 @@ body.is-ready { opacity: 1; }
   font-size: 11px; color: var(--text-muted); margin: -6px 0 22px 0; text-align: center;
 }
 
+/* Play badge shown over a video's thumbnail on the download page */
+.video-thumb-wrapper { margin-bottom: 22px; }
+.video-play-badge {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.video-play-badge svg { width: 24px; height: 24px; color: var(--accent-gold); margin-left: 3px; }
+
 /* Inline audio player card (for audio/voice files) */
 .audio-player-card {
   margin-bottom: 22px; padding: 14px; border-radius: var(--radius-lg);
@@ -350,11 +361,21 @@ body.is-ready { opacity: 1; }
           <img class="file-preview-image" src="{{ preview_url }}" alt="{{ file_name }}" draggable="false" oncontextmenu="return false;">
           <div class="preview-protect-overlay" aria-hidden="true" oncontextmenu="return false;"></div>
         </div>
+        {% elif mime_type and mime_type.startswith('video/') and thumb_url %}
+        <div class="file-preview-image-wrapper video-thumb-wrapper">
+          <img class="file-preview-image" src="{{ thumb_url }}" alt="{{ file_name }}" draggable="false"
+               onerror="this.closest('.video-thumb-wrapper').outerHTML = document.getElementById('fallbackIconMarkup').innerHTML;">
+          <div class="video-play-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
         {% else %}
         <div class="file-icon-wrapper" id="fileIconWrapper">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         </div>
         {% endif %}
+        <!-- Fallback markup used by the video thumbnail's onerror handler above -->
+        <template id="fallbackIconMarkup"><div class="file-icon-wrapper" id="fileIconWrapper"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div></template>
         <h1 class="file-display-name" id="fileDisplayName">{{ file_name }}</h1>
         {% if mime_type and mime_type.startswith('image/') %}
         <p class="preview-note">Low-quality preview &mdash; use Download File for the full-quality original</p>
