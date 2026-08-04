@@ -13,7 +13,7 @@ from FileStream.config import Telegram, Server
 from FileStream.server.exceptions import FIleNotFound, InvalidHash
 from FileStream import utils, StartTime, __version__
 from FileStream.utils.render_template import render_page
-from FileStream.utils.security import verify_secure_token
+from FileStream.utils.security import verify_secure_token, generate_secure_token
 from FileStream.utils.database import Database
 
 # Routes
@@ -27,6 +27,31 @@ def render_expired_page() -> str:
     with open("FileStream/template/link_expired.html") as f:
         template = jinja2.Template(f.read())
     return template.render(bot_username=FileStream.username)
+
+# "Evergreen" Redirect Routes — a button pointing at one of these never
+# goes stale, because no token is baked into the URL itself. Every visit
+# mints a brand-new signed token on the spot and redirects to the real
+# page. Used by buttons that may sit in old Telegram messages for a long
+# time (e.g. the /files list) instead of a pre-signed link.
+@routes.get("/go/watch/{path}")
+async def go_watch_handler(request: web.Request):
+    path = request.match_info["path"]
+    try:
+        await db.get_file(path)
+    except FIleNotFound:
+        return web.Response(text=render_expired_page(), content_type='text/html', status=404)
+    token = generate_secure_token(path)
+    raise web.HTTPFound(location=f"{Server.URL}watch/{path}?hash={token}")
+
+@routes.get("/go/download/{path}")
+async def go_download_handler(request: web.Request):
+    path = request.match_info["path"]
+    try:
+        await db.get_file(path)
+    except FIleNotFound:
+        return web.Response(text=render_expired_page(), content_type='text/html', status=404)
+    token = generate_secure_token(path)
+    raise web.HTTPFound(location=f"{Server.URL}download/{path}?hash={token}")
 
 # Status Route
 @routes.get("/", allow_head=True)
