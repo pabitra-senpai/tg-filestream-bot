@@ -220,6 +220,22 @@ vm-player {
 }
 .player-note svg { width: 15px; height: 15px; flex: none; stroke: var(--accent-gold); stroke-width: 2; fill: none; }
 
+/* Fallback shown instead of the Vime player when the file's format has no
+   native browser playback support (mkv, avi, wmv, flv, mpeg, ts, vob...) */
+.unsupported-frame { aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; }
+.unsupported-frame-inner { text-align: center; padding: 32px 24px; max-width: 380px; }
+.unsupported-icon { width: 40px; height: 40px; stroke: var(--accent-gold); stroke-width: 1.6; fill: none; margin: 0 auto 14px; display: block; }
+.unsupported-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+.unsupported-body { font-size: 13px; line-height: 1.5; color: var(--text-muted); }
+
+.notice-card.is-warning {
+  background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.28);
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.06);
+}
+.notice-card.is-warning .notice-icon,
+.notice-card.is-warning .notice-title,
+.notice-card.is-warning .notice-body { color: var(--accent-gold); opacity: 1; }
+
 /* Muted grey information cards (shared by both notices) */
 .notice-card-wrap { margin-top: 12px; }
 .notice-card {
@@ -385,9 +401,10 @@ vm-player {
 
   <!-- Player Shell — official Vime player -->
   <section class="player-shell reveal-node" style="animation-delay: 60ms">
+    {% if is_browser_playable %}
     <div class="player-frame">
       <vm-player theme="dark" id="vimePlayer">
-        <vm-video crossorigin poster="" preload="metadata">
+        <vm-video crossorigin poster="{{ thumb_url or '' }}" preload="metadata">
           <source data-src="{{ file_url }}" type="{{ mime_type }}" />
         </vm-video>
         <vm-default-ui></vm-default-ui>
@@ -402,6 +419,27 @@ vm-player {
         </div>
       </div>
     </div>
+    {% else %}
+    <div class="player-frame unsupported-frame">
+      <div class="unsupported-frame-inner">
+        <svg class="unsupported-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          <line x1="1" y1="1" x2="23" y2="23"/>
+        </svg>
+        <div class="unsupported-title">In-Browser Preview Not Available</div>
+        <div class="unsupported-body">This format isn't natively supported by web browsers. Open it in one of the apps below for full playback.</div>
+      </div>
+    </div>
+    <div class="notice-card-wrap">
+      <div class="notice-card is-warning">
+        <span class="notice-icon">⚠</span>
+        <div class="notice-text">
+          <div class="notice-title">Use an External Player</div>
+          <div class="notice-body">Browsers can't decode this video's format, but external apps can. Tap VLC, MX Player or nPlayer below — they play virtually every format.</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
   </section>
 
   <!-- External Players Section -->
