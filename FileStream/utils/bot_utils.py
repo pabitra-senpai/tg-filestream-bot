@@ -297,12 +297,19 @@ async def gen_files_caption_and_keyboard(file_list_no: int, user_id: int):
 
     files = [x async for x in user_files]
 
-    caption_lines = ["**🗂 Yᴏᴜʀ Fɪʟᴇs**", "", f"**📁 Tᴏᴛᴀʟ Fɪʟᴇs :** `{total_files}`", ""]
+    total_pages = math.ceil(total_files / 10) if total_files else 1
+
+    caption_lines = ["📦 **Your Files**", "", f"📁 **Total Files:** {total_files}", ""]
     if files:
+        caption_lines.append("Tap a number below to view or download the corresponding file.")
+        caption_lines.append("")
         for idx, x in enumerate(files, start=1):
             caption_lines.append(f"{idx}. {truncate_file_name(x['file_name'])}")
+        caption_lines.append("")
+        caption_lines.append("━━━━━━━━━━━━━━")
+        caption_lines.append(f"Page {file_list_no}/{total_pages} • Showing {len(files)} of {total_files} Files")
     else:
-        caption_lines.append("ᴇᴍᴘᴛʏ")
+        caption_lines.append("No files found.")
     caption = "\n".join(caption_lines)
 
     keyboard = []
